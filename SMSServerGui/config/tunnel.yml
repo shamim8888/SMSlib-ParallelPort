@@ -1,0 +1,23 @@
+development:
+  tunnel:
+    public_host_username: your_tunnelr_username
+    public_host: your_tunnelr_host
+    public_port: your_tunnelr_port
+    local_port: 3000 #or whatever port your rails server is running locally
+    server_alive_interval: 0
+
+test:
+  tunnel:
+    public_host_username:
+    public_host:
+    public_port: 4007
+    local_port: 3000
+    server_alive_interval: 0
+
+production:
+  tunnel:
+    public_host_username:
+    public_host:
+    public_port: 4007
+    local_port: 3000
+    server_alive_interval: 0
