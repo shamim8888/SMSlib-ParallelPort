@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE message SYSTEM "smssvr_in.dtd">
+<message encoding="7" gateway_id="modem1" type="I">
+<originator>RobiRewards</originator>
+<text>BONUS Offer! Proti 5 Taka kothay 60% Robi-Robi Talktime FREE! Beshi kothay beshi BONUS (paben kotha bolar porer din, meyad 2 din). Aro offer jante dial *999#.</text>
+<receive_date>2014-01-27T16:18:34+06:00</receive_date>
+</message>

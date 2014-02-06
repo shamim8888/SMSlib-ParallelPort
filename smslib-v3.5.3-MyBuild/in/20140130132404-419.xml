@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE message SYSTEM "smssvr_in.dtd">
+<message encoding="7" gateway_id="modem1" type="I">
+<originator>SMSpack</originator>
+<text>To enjoy 40 SMS (20 SMS for Robi - Robi &amp; 20 SMS for other local number) @ TK 3 +VAT only, Validity 1 day (from purchase time till 23:59:59 Hrs) Dial *8666*40#</text>
+<receive_date>2014-01-30T11:56:14+06:00</receive_date>
+</message>

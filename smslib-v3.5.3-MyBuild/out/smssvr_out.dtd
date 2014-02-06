@@ -1,0 +1,16 @@
+ <!ELEMENT message (recipient, text, originator, create_date?)>
+   <!ATTLIST message 
+      id	 	 ID      #REQUIRED
+      gateway_id	 CDATA	#IMPLIED
+      status         CDATA  "U" 
+      encoding       CDATA	"7"
+      priority       CDATA	"N"
+      ref_no         CDATA	#IMPLIED
+      status_report  CDATA	#IMPLIED
+      flash_sms      CDATA	#IMPLIED
+      src_port       CDATA	#IMPLIED
+      dst_port       CDATA	#IMPLIED> 
+   <!ELEMENT recipient (#PCDATA)>
+   <!ELEMENT text (#PCDATA)>
+   <!ELEMENT create_date (#PCDATA)>
+   <!ELEMENT originator (#PCDATA)>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE message SYSTEM "smssvr_in.dtd">
+<message encoding="7" gateway_id="modem1" type="I">
+<originator>TodaysOffer</originator>
+<text>Unlimited Pack! Dial *8444*85#  for 1GB@ 275Tk or Dial *8444*92# Get 2GB@ 399Tk/30days. Downlod FREE Mobile Video http://vuclip.com/?mobile</text>
+<receive_date>2014-01-30T13:15:42+06:00</receive_date>
+</message>

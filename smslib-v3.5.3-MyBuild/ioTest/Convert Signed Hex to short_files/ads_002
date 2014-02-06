@@ -1,0 +1,29 @@
+{
+
+var google_ads = new Array();
+var google_ad;
+var google_radlinks = new Array();
+var google_radlink;
+var google_info = new Object();
+google_ad = new Object(); 
+google_ad.n = 1; 
+google_ad.type = "text"; 
+google_ad.bidtype = "CPC"; 
+google_ad.targeting_type = "contextual"; 
+google_ad.url = "http://www.googleadservices.com/pagead/aclk?sa=L&amp;ai=BPzothicNT_-5EeSKiAeZrOjCCoKIiKgBzLG6gBPAjbcBoI0GEAEYASCPqvUBOABQ7ujW9fj_____AWAzoAG8nc38A7IBD3d3dy5kYW5pd2ViLmNvbboBCTcyOHg5MF9qc8gBAdoBP2h0dHA6Ly93d3cuZGFuaXdlYi5jb20vc29mdHdhcmUtZGV2ZWxvcG1lbnQvamF2YS90aHJlYWRzLzE4MzAyNIACAagDAegD3AXoA5UE6AOuAegDH_UDAAEAxPUDAAAAEIgGAQ&amp;num=1&amp;cid=5GhGYZwWcCHPG-BrEAhmwEKm&amp;sig=AOD64_377BeKMk9Cr4eX3PTY5KyB3U3HXg&amp;client=ca-pub-8426641637123945&amp;adurl=http://discuss.codechef.com/"; 
+google_ad.visible_url = "discuss.codechef.com/"; 
+google_ad.line1 = "Programming Tips"; 
+google_ad.line2 = "Tricks and Tips on Programming"; 
+google_ad.line3 = "Learn from a Community of Experts"; 
+google_ad.regionname = ""; 
+google_ads[0] = google_ad; 
+google_info.feedback_url = "http://www.google.com/url?ct\x3dabg\x26q\x3dhttps://www.google.com/adsense/support/bin/request.py%3Fcontact%3Dabg_afc%26url%3Dhttp://www.daniweb.com/software-development/java/threads/183024%26hl%3Den%26client%3Dca-pub-8426641637123945%26adU%3Ddiscuss.codechef.com/%26adT%3DProgramming%2BTips%26gl%3DBD\x26usg\x3dAFQjCNFOqMaEWxXRG_s590i1TLuaxEB6VA";
+var google_attribution_text = "AdChoices";
+var google_is_rtl = false;
+if (window.google_ad_request_done) {
+google_ad_request_done(google_ads);
+}
+if (window.google_radlink_request_done) {
+google_radlink_request_done(google_radlinks);
+}
+}

@@ -1,0 +1,37 @@
+
+ CREATE  TABLE  `opensis1`.`smsserver_parallel_in` (  `id` int( 10  )  unsigned NOT  NULL  AUTO_INCREMENT ,
+ `type` varchar( 1  )  NOT  NULL DEFAULT  'O',
+ `recipient` varchar( 16  )  NOT  NULL ,
+ `text` varchar( 1000  )  NOT  NULL ,
+ `wap_url` varchar( 100  )  DEFAULT NULL ,
+ `wap_expiry_date` datetime  DEFAULT NULL ,
+ `wap_signal` varchar( 1  )  DEFAULT NULL ,
+ `create_date` datetime NOT  NULL ,
+ `originator` varchar( 16  )  NOT  NULL DEFAULT  ' ',
+ `encoding` varchar( 1  )  NOT  NULL DEFAULT  '7',
+ `status_report` int( 1  )  NOT  NULL DEFAULT  '0',
+ `flash_sms` int( 1  )  NOT  NULL DEFAULT  '0',
+ `src_port` int( 6  )  NOT  NULL DEFAULT  '-1',
+ `dst_port` int( 6  )  NOT  NULL DEFAULT  '-1',
+ `sent_date` datetime  DEFAULT NULL ,
+ `ref_no` varchar( 64  )  DEFAULT NULL ,
+ `priority` int( 5  )  NOT  NULL DEFAULT  '0',
+ `status` varchar( 1  )  NOT  NULL DEFAULT  'U',
+ `errors` int( 2  )  NOT  NULL DEFAULT  '0',
+ `gateway_id` varchar( 64  )  NOT  NULL DEFAULT  '*',
+ PRIMARY  KEY (  `id`  )  ) ENGINE  =  MyISAM  DEFAULT CHARSET  = utf8;
+
+
+
+ CREATE  TABLE  `opensis1`.`smsserver_parallel_out` (  `id` int( 10  )  unsigned NOT  NULL  AUTO_INCREMENT ,
+ `process` int( 11  )  NOT  NULL ,
+ `originator` varchar( 16  )  NOT  NULL ,
+ `type` varchar( 1  )  NOT  NULL ,
+ `encoding` char( 1  )  NOT  NULL ,
+ `message_date` datetime NOT  NULL ,
+ `receive_date` datetime NOT  NULL ,
+ `text` varchar( 1000  )  NOT  NULL ,
+ `original_ref_no` varchar( 64  )  DEFAULT NULL ,
+ `original_receive_date` datetime  DEFAULT NULL ,
+ `gateway_id` varchar( 64  )  DEFAULT NULL ,
+ PRIMARY  KEY (  `id`  )  ) ENGINE  =  MyISAM  DEFAULT CHARSET  = utf8;

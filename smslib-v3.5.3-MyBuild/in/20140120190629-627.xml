@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE message SYSTEM "smssvr_in.dtd">
+<message encoding="7" gateway_id="modem1" type="I">
+<originator>Robi</originator>
+<text>Your account is insufficient for calls to the dialed number.Please recharge first,dial 111 to recharge your account.</text>
+<receive_date>2014-01-20T17:03:56+06:00</receive_date>
+</message>

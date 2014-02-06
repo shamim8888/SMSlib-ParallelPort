@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE message SYSTEM "smssvr_in.dtd">
+<message encoding="7" gateway_id="modem1" type="I">
+<originator>8801789421751</originator>
+<text>Room1 all on</text>
+<receive_date>2014-01-05T20:43:05+06:00</receive_date>
+</message>

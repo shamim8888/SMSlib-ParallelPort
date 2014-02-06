@@ -1,0 +1,9 @@
+ <!ELEMENT message (originator, text, receive_date)>
+   <!ATTLIST message
+       id		ID	#REQUIRED
+       gateway_id	CDATA	#REQUIRED
+       type		CDATA	#IMPLIED
+       encoding	CDATA	#IMPLIED >
+     <!ELEMENT originator (#PCDATA)>
+     <!ELEMENT text (#PCDATA)>
+     <!ELEMENT receive_date (#PCDATA)>
