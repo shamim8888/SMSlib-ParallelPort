@@ -416,6 +416,7 @@ public class Xml extends Interface<File>
 	public void markMessage(org.smslib.OutboundMessage msg) throws Exception
 	{
 		if (msg == null) { return; }
+                if (getMessageCache().get(msg.getMessageId()) == null) { return; }
 		File f = getMessageCache().get(msg.getMessageId());
 		File newF = null;
 		switch (msg.getMessageStatus())

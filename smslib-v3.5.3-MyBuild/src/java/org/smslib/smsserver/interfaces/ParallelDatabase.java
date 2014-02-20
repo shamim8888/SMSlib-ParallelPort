@@ -94,7 +94,7 @@ public class ParallelDatabase extends Interface<Integer>
 			{
 				con = getDbConnection();
 				cmd = con.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-				cmd.executeUpdate("update " + getProperty("tables.sms_out", "smsserver_out") + " set status = 'U' where status = 'Q'");
+				cmd.executeUpdate("update " + getProperty("tables.sms_out", "smsserver_parallel_out") + " set status = 'U' where status = 'Q'");
 				con.commit();
 				cmd.close();
 				break;
@@ -129,7 +129,7 @@ public class ParallelDatabase extends Interface<Integer>
 				Statement cmd;
 				con = getDbConnection();
 				cmd = con.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-				cmd.executeUpdate("update " + getProperty("tables.sms_out", "smsserver_out") + " set status = 'U' where status = 'Q'");
+				cmd.executeUpdate("update " + getProperty("tables.sms_out", "smsserver_parallel_out") + " set status = 'U' where status = 'Q'");
 				con.commit();
 				cmd.close();
 				closeDbConnection();
@@ -200,7 +200,7 @@ public class ParallelDatabase extends Interface<Integer>
 			{
 				PreparedStatement pst;
 				con = getDbConnection();
-				pst = con.prepareStatement(" insert into " + getProperty("tables.sms_in", "smsserver_parallel_out") + " (process, originator, type, encoding, message_date, receive_date, text," + " original_ref_no, original_receive_date, gateway_id) " + " values(?,?,?,?,?,?,?,?,?,?)");
+				pst = con.prepareStatement(" insert into " + getProperty("tables.sms_in", "smsserver_parallel_in") + " (process, originator, type, encoding, message_date, receive_date, text," + " original_ref_no, original_receive_date, gateway_id) " + " values(?,?,?,?,?,?,?,?,?,?)");
 				for (InboundMessage msg : msgList)
 				{
 					if ((msg.getType() == MessageTypes.INBOUND) || (msg.getType() == MessageTypes.STATUSREPORT))
@@ -239,7 +239,7 @@ public class ParallelDatabase extends Interface<Integer>
 								if (getProperty("update_outbound_on_statusreport", "no").equalsIgnoreCase("yes"))
 								{
 									PreparedStatement cmd2;
-									cmd2 = con.prepareStatement(" update " + getProperty("tables.sms_out", "smsserver_out") + " set status = ? " + " where (recipient = ? or recipient = ?) and ref_no = ? and gateway_id = ?");
+									cmd2 = con.prepareStatement(" update " + getProperty("tables.sms_out", "smsserver_parallel_out") + " set status = ? " + " where (recipient = ? or recipient = ?) and ref_no = ? and gateway_id = ?");
 									switch (((StatusReportMessage) msg).getStatus())
 									{
 										case DELIVERED:
@@ -802,8 +802,8 @@ public class ParallelDatabase extends Interface<Integer>
 				msgCount = 1;
 				con = getDbConnection();
 				cmd = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-				pst = con.prepareStatement("update " + getProperty("tables.sms_out", "smsserver_out") + " set status = 'Q' where id = ? ");
-				rs = cmd.executeQuery("select id, type, recipient, text, wap_url, wap_expiry_date, wap_signal, create_date, originator, encoding, status_report, flash_sms, src_port, dst_port, sent_date, ref_no, priority, status, errors, gateway_id from " + getProperty("tables.sms_out", "smsserver_out") + " where status = 'U' order by priority desc, id");
+				pst = con.prepareStatement("update " + getProperty("tables.sms_out", "smsserver_parallel_out") + " set status = 'Q' where id = ? ");
+				rs = cmd.executeQuery("select id, type, recipient, text, wap_url, wap_expiry_date, wap_signal, create_date, originator, encoding, status_report, flash_sms, src_port, dst_port, sent_date, ref_no, priority, status, errors, gateway_id from " + getProperty("tables.sms_out", "smsserver_parallel_out") + " where status = 'U' order by priority desc, id");
 				while (rs.next())
 				{
 					if (msgCount > Integer.parseInt(getProperty("batch_size"))) break;
@@ -935,7 +935,7 @@ public class ParallelDatabase extends Interface<Integer>
 				ResultSet rs;
 				con = getDbConnection();
 				cmd = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-				rs = cmd.executeQuery("select count(*) as cnt from " + getProperty("tables.sms_out", "smsserver_out") + " where status in ('U', 'Q')");
+				rs = cmd.executeQuery("select count(*) as cnt from " + getProperty("tables.sms_out", "smsserver_parallel_out") + " where status in ('U', 'Q')");
 				if (rs.next()) count = rs.getInt("cnt");
 				rs.close();
 				cmd.close();
@@ -972,7 +972,7 @@ public class ParallelDatabase extends Interface<Integer>
 				ResultSet rs;
 				int errors;
 				con = getDbConnection();
-				selectStatement = con.prepareStatement("select errors from " + getProperty("tables.sms_out", "smsserver_out") + " where id = ?");
+				selectStatement = con.prepareStatement("select errors from " + getProperty("tables.sms_out", "smsserver_parallel_out") + " where id = ?");
 				selectStatement.setInt(1, getMessageCache().get(msg.getMessageId()));
 				rs = selectStatement.executeQuery();
 				rs.next();
@@ -981,7 +981,7 @@ public class ParallelDatabase extends Interface<Integer>
 				selectStatement.close();
 				if (msg.getMessageStatus() == MessageStatuses.SENT)
 				{
-					updateStatement = con.prepareStatement("update " + getProperty("tables.sms_out", "smsserver_out") + " set status = ?, sent_date = ?, gateway_id = ?, ref_no = ? where id = ?");
+					updateStatement = con.prepareStatement("update " + getProperty("tables.sms_out", "smsserver_parallel_out") + " set status = ?, sent_date = ?, gateway_id = ?, ref_no = ? where id = ?");
 					updateStatement.setString(1, "S");
 					updateStatement.setTimestamp(2, new Timestamp(msg.getDispatchDate().getTime()));
 					updateStatement.setString(3, msg.getGatewayId());
@@ -993,7 +993,7 @@ public class ParallelDatabase extends Interface<Integer>
 				}
 				else if ((msg.getMessageStatus() == MessageStatuses.UNSENT) || ((msg.getMessageStatus() == MessageStatuses.FAILED) && (msg.getFailureCause() == FailureCauses.NO_ROUTE)))
 				{
-					updateStatement = con.prepareStatement("update " + getProperty("tables.sms_out", "smsserver_out") + " set status = ? where id = ?");
+					updateStatement = con.prepareStatement("update " + getProperty("tables.sms_out", "smsserver_parallel_out") + " set status = ? where id = ?");
 					updateStatement.setString(1, "U");
 					updateStatement.setInt(2, getMessageCache().get(msg.getMessageId()));
 					updateStatement.executeUpdate();
@@ -1002,7 +1002,7 @@ public class ParallelDatabase extends Interface<Integer>
 				}
 				else
 				{
-					updateStatement = con.prepareStatement("update " + getProperty("tables.sms_out", "smsserver_out") + " set status = ?, errors = ? where id = ?");
+					updateStatement = con.prepareStatement("update " + getProperty("tables.sms_out", "smsserver_parallel_out") + " set status = ?, errors = ? where id = ?");
 					errors++;
 					if (errors > Integer.parseInt(getProperty("retries", "2"))) updateStatement.setString(1, "F");
 					else updateStatement.setString(1, "U");
