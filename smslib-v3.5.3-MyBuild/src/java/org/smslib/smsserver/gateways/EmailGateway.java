@@ -40,7 +40,7 @@ public class EmailGateway extends AGateway
 	public EmailGateway(String myGatewayId, Properties myProps, org.smslib.smsserver.SMSServer myServer)
 	{
 		super(myGatewayId, myProps, myServer);
-		setDescription(myGatewayId+" Xmpp Gateway.");
+		setDescription(myGatewayId+" Email Gateway.");
 	}
 
 	@SuppressWarnings("unchecked")

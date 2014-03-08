@@ -1,0 +1,8 @@
+AuthUserFile /home/mike/.htpasswd
+AuthGroupFile /home/mike/.htgroup
+AuthName "Admin login"
+AuthType Basic
+<LIMIT GET>
+require group admin
+</LIMIT>
+

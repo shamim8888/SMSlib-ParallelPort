@@ -1,0 +1,49 @@
+<h1>Listing Parallel Configuration</h1>
+
+<table>
+  <tr>
+    <th>Building Name</th>
+    <th>Floor Name</th>
+    <th>Flat Name</th>
+    <th>Room Name</th>
+    <th>Host Name</th>
+    <th>Host Address</th>
+    <th>Device Name</th>
+    <th>Device Address</th>
+    <th>Equipment Name</th>
+    <th>Equipment Name</th>
+    <th>Equipment Name</th>
+    <th>Equipment Name</th>
+    <th>Equipment Name</th>
+    <th>Equipment Name</th>
+    <th>Equipment Name</th>
+    <th>Equipment Name</th>
+  </tr>
+
+<% @parallel_managements.each do |user| %>
+  <tr>
+    <td><%=h user.building_name %></td>
+    <td><%=h user.floor_name %></td>
+    <td><%=h user.flat_name %></td>
+    <td><%=h user.room_name %></td>
+    <td><%=h user.host_name %></td>
+    <td><%=h user.host_address %></td>
+    <td><%=h user.device_name %></td>
+    <td><%=h user.device_address %></td>
+    <td><%=h user.equipment_name1 %></td>
+    <td><%=h user.equipment_name2 %></td>
+    <td><%=h user.equipment_name3 %></td>
+    <td><%=h user.equipment_name4 %></td>
+    <td><%=h user.equipment_name5 %></td>
+    <td><%=h user.equipment_name6 %></td>
+    <td><%=h user.equipment_name7 %></td>
+    <td><%=h user.equipment_name8 %></td>
+    <td><%= link_to 'Edit', edit_parallel_management_path(user) %></td>
+    <td><%= link_to 'Destroy', user, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Equipment', new_parallel_management_path %>

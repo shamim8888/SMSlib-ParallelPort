@@ -1,0 +1,16 @@
+<h1>New Floor</h1>
+
+<% form_for(@floor) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :floor_name %><br />
+    <%= f.text_field :name %>
+  </p>
+  
+  <p>
+    <%= f.submit 'Create' %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', floors_path %>

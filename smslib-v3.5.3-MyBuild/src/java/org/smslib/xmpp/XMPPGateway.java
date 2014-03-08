@@ -125,8 +125,8 @@ public class XMPPGateway extends AbstractXmppGateway {
                 //this.smtp_password=smtp_password;
                 //this.to=to;
                 //this.from=from;
-                this.message_subject = message_subject;
-                this.message_body = message_body;
+                this.messageSubject = message_subject;
+                this.messageBody = message_body;
                 
 		setAttributes(AGateway.GatewayAttributes.SEND | AGateway.GatewayAttributes.CUSTOMFROM | AGateway.GatewayAttributes.BIGMESSAGES | AGateway.GatewayAttributes.FLASHSMS | AGateway.GatewayAttributes.RECEIVE);
 		
@@ -190,6 +190,7 @@ public class XMPPGateway extends AbstractXmppGateway {
                 }
                 Logger.getInstance().logInfo("Starting gateway.", null, getGatewayId());
                 super.startGateway();
+                Logger.getInstance().logInfo("Gateway started.", null, getGatewayId());
             } catch (XMPPException ex) {
                 java.util.logging.Logger.getLogger(XMPPGateway.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -199,13 +200,13 @@ public class XMPPGateway extends AbstractXmppGateway {
 	@Override
 	public void stopGateway() throws TimeoutException, GatewayException,
 			IOException, InterruptedException {
-		
+		Logger.getInstance().logInfo("Stopping gateway...", null, getGatewayId());
 		super.stopGateway();
+                Logger.getInstance().logInfo("Gateway stopped.", null, getGatewayId());
 	}
 
 
-        @Override
-	public boolean readMessages(InboundMessage msg) throws TimeoutException, GatewayException, IOException, InterruptedException, MessagingException
+        	public boolean readMessage(InboundMessage msg) throws TimeoutException, GatewayException, IOException, InterruptedException
 	{
             
                 List<InboundMessage> retValue = new ArrayList<InboundMessage>();
@@ -216,13 +217,13 @@ public class XMPPGateway extends AbstractXmppGateway {
                 //connection.addPacketListener(myListener, filter);
                         if (this.msgBody != null)
                             {
-                                InboundMessage om = new InboundMessage(userPhone, msgBody);
+                                InboundMessage om = new InboundMessage(presenttime,this.msgFrom, this.msgBody, this.host);
                        
-                                om.setFrom(buddyJID.toString());
+                                om.setFrom(this.buddyJID.toString());
                                 om.setDate(presenttime);
                                 retValue.add(om);
                                 collector.cancel();
-                                msgBody = null;
+                                this.msgBody = null;
                             }
                             // Delete message from inbox
                             
@@ -262,6 +263,7 @@ public class XMPPGateway extends AbstractXmppGateway {
                 String fromReceivedMessageBuddy = buddyJID+"@"+host;
                 System.out.println(fromReceivedMessageBuddy);
                 sendMessage(sndMsg.getBody(), fromReceivedMessageBuddy);
+                msg.setDispatchDate(new Date());
                 msg.setMessageStatus(MessageStatuses.SENT);
                                                                                 
                 
@@ -282,7 +284,7 @@ public class XMPPGateway extends AbstractXmppGateway {
 		sb.replaceAll("%encoding%", (msg.getEncoding() == MessageEncodings.ENC7BIT ? "7-bit" : (msg.getEncoding() == MessageEncodings.ENC8BIT ? "8-bit" : "UCS2 (Unicode)")));
 		sb.replaceAll("%date%", msg.getDate().toString());
 		sb.replaceAll("%text%", msg.getText());
-		//sb.replaceAll("%pduUserData%", msg.getPduUserData());
+		sb.replaceAll("%pduUserData%", msg.getPduUserData());
 		//sb.replaceAll("%originator%", msg.getOriginator());
 		//sb.replaceAll("%memIndex%", msg.getMemIndex());
 		//sb.replaceAll("%mpMemIndex%", msg.getMpMemIndex());
@@ -291,13 +293,13 @@ public class XMPPGateway extends AbstractXmppGateway {
         
         private void prepareMessageTemplate()
 	{
-		this.messageSubject = "message_subject" ;
-		if (this.messageSubject == null ||this. messageSubject.length() == 0)
+		//this.messageSubject = "message_subject" ;
+		if (this.messageSubject == null ||this.messageSubject.length() == 0)
 		{
 			Logger.getInstance().logWarn("No message_subject found - Using default", null, null);
 			this.messageSubject = "SMS from %ORIGINATOR%";
 		}
-		File f = new File("message_body");
+		File f = new File(this.messageBody);
 		if (f.canRead())
 		{
 			try

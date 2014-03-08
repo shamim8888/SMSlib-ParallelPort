@@ -8,9 +8,10 @@ class LoginController < ApplicationController
           logged_in_user = @user.try_to_login
         if logged_in_user
         session[ :user_id ]  = logged_in_user.id
-        session[ :email_address ]  = @user.email_address
+        session[ :email_address ]  = logged_in_user.email_address
+        session[ :im_address ]  = logged_in_user.im_address
         redirect_to(  :controller => :welcome  )
-        session[:success] = "You are successfully logged in"+ logged_in_user.id.to_s 
+        session[:success] = "You are successfully logged in"+ logged_in_user.id.to_s + logged_in_user.email_address.to_s + logged_in_user.im_address.to_s
        else
         session[:error] = "Invalid user/passord combination" 
        end

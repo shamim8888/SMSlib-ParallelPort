@@ -1,0 +1,45 @@
+cgic License Terms
+------------------
+
+Basic License
+-------------
+
+cgic, copyright 1995 by Thomas Boutell. Permission is granted to use cgic 
+in any application, commercial or noncommercial, at no cost. HOWEVER,
+this copyright paragraph must appear on a "credits" page accessible in 
+the public online and offline documentation of the program. Modified 
+versions of the cgic library should not be distributed without the 
+attachment of a clear statement regarding the author of the 
+modifications, and this notice may in no case be removed. 
+Modifications may also be submitted to the author for inclusion 
+in the main cgic distribution.                                 
+
+IF YOU WOULD PREFER NOT TO ATTACH THE ABOVE NOTICE to
+the public documentation of your application, consult the
+information which follows regarding the availability
+of a nonexclusive commercial license for cgic.
+
+Priority support contracts are also available; see the file
+SUPPORT for details.
+
+Commercial License
+------------------
+
+A nonexclusive commercial license is available for cgic.
+The commercial license grants you the right to make use of 
+cgic in your applications without the need for a credit
+notice of any kind. Under the commercial license, applications 
+developed with cgic may be redistributed freely. cgic may
+not be used to create a development tool which passes on
+substantially all of the capabilities of the cgic library
+to the user of the tool, unless that tool is strictly for use
+within applications developed by the holder of the commercial 
+license.  Such libraries may of course be distributed under the 
+normal non-commercial license terms, which require a credit
+notice (see above).
+
+The nonexclusive commercial license is available
+for a one-time fee of $500. Please contact the author,
+boutell@boutell.com, for payment details.
+
+

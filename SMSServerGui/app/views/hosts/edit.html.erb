@@ -1,0 +1,21 @@
+<h1>Editing Host</h1>
+
+<% form_for(@host) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :host_name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :host_address %><br />
+    <%= f.text_field :address %>
+  </p>
+  
+  <p>
+    <%= f.submit 'Update' %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @host %> |
+<%= link_to 'Back', hosts_path %>

@@ -1,0 +1,67 @@
+<h1>Parallel Control</h1>
+<% form_for(@parallel_control) do |f| %>
+  <%= f.error_messages %>
+<p>
+  <%= radio_button_tag(:all, "all") %>
+<%= label_tag(:all, "ALL") %>
+<%= radio_button_tag(:partial, "partial") %>
+<%= label_tag(:partial, "Partial") %>
+    <%= button_to [:SelectAll]  %>
+  <%= button_to [:ON] %><%= button_to [:OFF] %><%= button_to [:TOGGLE] %>
+  <%= link_to_function("Select All","checkboxes.each(function(e){ e.checked = 1 })") %>
+  <%= check_box_tag('check_all', 'check_all', false,  :onClick => "$$('#my_form input.check').each(function(box){box.checked=(box.checked==false)?true:false});") %>
+
+<%= check_box_tag('check_all', 'check_all', false,  :onClick => "$$('#new_parallel_management input.check').each(function(box){box.checked=(box.checked==false)?true:false});") %>
+
+<%= check_box_tag('check_all', 'check_all', false,  :onClick => "$$('#parallel_management input.check').each(function(box){box.checked=($('check_all').checked)?true:false});")%>
+<%= check_box_tag('check_all', 'check_all', false,  :onClick => "$$('#my_form input.check').each(function(box){box.checked=($('check_all').checked)?true:false});")%>
+<%= select_tag(:choose_all_id, options_for_select([['Building Name', 1], ['Floor Name', 2], ['Flat Name', 3], ['Room Name', 4], ['Host Name', 5], ['Host Address', 6], ['Device Name', 7], ['Equipment Name', 8]],  1), {:multiple => :multiple}) %>
+<%= javascript_include_tag :defaults %>
+<%= collection_select(nil, :building_id,  @buildings,  :id, :name,
+                      {:prompt   => "Select a Building"},
+                      {:onchange => "#{remote_function(:url  => {:action => "update_buildings"},
+                                                       :with => "'building_id='+value")}"}) %>
+<br/>
+<div id="floors"><%= render :partial => 'floors', :object => @floors %></div>
+<div id="flats"><%= render :partial => 'flats',   :object => @flatss %></div>  
+  </p>
+<table>
+  <tr>
+    <th>BuildingName</th>
+    <th>FloorName</th>
+    <th>FlatName</th>
+    <th>RoomName</th>
+    <th>HostAddressAllIPV4</th>
+    <th>DeviceName</th>    
+    <th>Equipment Name 1</th>
+    <th>Equipment Name 2</th>
+    <th>EquipmentName3</th>
+    <th>Equipment Name 4</th>
+    <th>EquipmentName5</th>
+    <th>EquipmentName6</th>
+    <th>EquipmentName7</th>
+    <th>EquipmentName8</th>
+  </tr>
+
+<% @parallel_controls.each do |user| %>
+  <tr>
+    <td><%= check_box_tag(:building_name) %><%= label_tag(:building_name, user.building_name) %></td>    
+    <td><%= check_box_tag(:floor_name) %><%= label_tag(:floor_name, user.floor_name) %></td>    
+    <td><%= check_box_tag(:flat_name) %><%= label_tag(:flat_name, user.flat_name) %></td>    
+    <td><%= check_box_tag(:room_name) %><%= label_tag(:room_name, user.room_name) %></td>    
+    <td><%= check_box_tag(:host_address) %><%= label_tag(:host_address, user.host_address) %></td>    
+    <td><%= check_box_tag(:device_name) %><%= label_tag(:device_name, user.device_name) %></td>        
+    <td><%= check_box_tag(:equipment_name1) %><%= label_tag(:equipment_name1, user.equipment_name1) %><%= image_tag("1394138505_traffic_lights_green.png", :alt => "ON") %></td>    
+    <td><%= check_box_tag(:equipment_name2) %><%= label_tag(:equipment_name2, user.equipment_name2) %><%= image_tag("1394138505_traffic_lights_green.png", :alt => "ON") %></td>    
+    <td><%= check_box_tag(:equipment_name3) %><%= label_tag(:equipment_name3, user.equipment_name3) %><%= image_tag("1394138505_traffic_lights_green.png", :alt => "ON") %></td>    
+    <td><%= check_box_tag(:equipment_name4) %><%= label_tag(:equipment_name4, user.equipment_name4) %><%= image_tag("1394138505_traffic_lights_green.png", :alt => "ON") %></td>    
+    <td><%= check_box_tag(:equipment_name5) %><%= label_tag(:equipment_name5, user.equipment_name5) %><%= image_tag("1394138505_traffic_lights_green.png", :alt => "ON") %></td>    
+    <td><%= check_box_tag(:equipment_name6) %><%= label_tag(:equipment_name6, user.equipment_name6) %><%= image_tag("1394138505_traffic_lights_green.png", :alt => "ON") %></td>    
+    <td><%= check_box_tag(:equipment_name7) %><%= label_tag(:equipment_name7, user.equipment_name7) %><%= image_tag("1394138505_traffic_lights_green.png", :alt => "ON") %></td>    
+    <td><%= check_box_tag(:equipment_name8) %><%= label_tag(:equipment_name8, user.equipment_name8) %><%= image_tag("1394138505_traffic_lights_green.png", :alt => "ON") %></td>        
+  </tr>
+<% end %>
+
+</table>
+
+<% end %>

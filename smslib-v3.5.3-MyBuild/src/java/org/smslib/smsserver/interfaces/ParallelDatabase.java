@@ -53,12 +53,13 @@ import java.io.*;
 import static java.rmi.server.LogStream.log;
 import java.util.StringTokenizer;
 
-// end of my import shamim
+// end of my import Shamim Ahmed Chowdhury
 
 /**
- * Interface for database communication with SMSServer. <br />
+ * Interface for Parallel database communication with SMSServer. <br />
  * Inbound messages and calls are logged in special tables, outbound messages
  * are retrieved from another table.
+ * @author Shamim Ahmed Chowdhury
  */
 public class ParallelDatabase extends Interface<Integer>
 {
@@ -68,13 +69,25 @@ public class ParallelDatabase extends Interface<Integer>
 
 	private Connection dbCon = null;
         
-        // This is my writing shamim
+        // This is my writing Shamim Ahmed Chowdhury
         private String ParallelMessage = null;
+        private String AllMessageString = null;
+        private String Host = getServer().getHostAddress();
         static short datum;
         static short Addr;
 	static pPort lpt;
+        private int rowCount = 0;
+        private String[] MessageString = new String[500];
+        private String[][] AreaName = new String[rowCount][15];
+        private String[][] HostMessageString = new String[128][15];       
+        private ArrayList SMSMessageString = new ArrayList<String>();
+        private String[] DelimeterArray = new String[8];                              
+        private int fieldCount = 0;
         
-        // end of my writing shamim
+        private int HostCount = 0;
+        private String CompareMessage = null;
+        
+        // end of my writing Shamim Ahmed Chowdhury
 
 	public ParallelDatabase(String myInterfaceId, Properties myProps, SMSServer myServer, InterfaceTypes myType)
 	{
@@ -198,9 +211,26 @@ public class ParallelDatabase extends Interface<Integer>
 		{
 			try
 			{
+				Statement cmd;
 				PreparedStatement pst;
+				ResultSet rs;
+                                ResultSet rowcount;
+                                ResultSet fieldcount;
+				int msgCount;
+                                
+				msgCount = 1;
 				con = getDbConnection();
-				pst = con.prepareStatement(" insert into " + getProperty("tables.sms_in", "smsserver_parallel_in") + " (process, originator, type, encoding, message_date, receive_date, text," + " original_ref_no, original_receive_date, gateway_id) " + " values(?,?,?,?,?,?,?,?,?,?)");
+				cmd = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				//pst = con.prepareStatement("update " + getProperty("tables.sms_out", "smsserver_parallel_out") + " set status = 'Q' where id = ? ");
+				fieldcount = cmd.executeQuery("SELECT COUNT(*) AS CNT FROM information_schema.columns WHERE table_schema = 'smslib' AND table_name = 'parallel_comm_port_view' ");
+                                if (fieldcount.next()) fieldCount = fieldcount.getInt("CNT");
+                                rowcount = cmd.executeQuery("SELECT COUNT(*) AS CNT FROM parallel_comm_port_view");
+                                if (rowcount.next()) rowCount = rowcount.getInt("CNT");
+                                
+                                rs = cmd.executeQuery("SELECT * FROM parallel_comm_port_view ");
+                                //PreparedStatement pst;
+				//con = getDbConnection();
+				pst = con.prepareStatement(" insert into " + getProperty("tables.sms_in", "smsserver_parallel_in") + " (process, originator, type, encoding, message_date, receive_date, text," + " original_ref_no, original_receive_date, gateway_id, gateway_address, host_address) " + " values(?,?,?,?,?,?,?,?,?,?,?,?)");
 				for (InboundMessage msg : msgList)
 				{
 					if ((msg.getType() == MessageTypes.INBOUND) || (msg.getType() == MessageTypes.STATUSREPORT))
@@ -270,500 +300,358 @@ public class ParallelDatabase extends Interface<Integer>
 						if (msg.getEncoding() == MessageEncodings.ENC8BIT) pst.setString(7, msg.getPduUserData());
 						else pst.setString(7, (msg.getText().length() == 0 ? "" : msg.getText()));
                                                 
-                                                //this is my writing shamim
-                                                // Shamim Ahmed Chowdhury
+                                                //this is my writing Shamim Ahmed Chowdhury                                                
                                                 
                                                 if (msg.getEncoding() == MessageEncodings.ENC8BIT) ParallelMessage =  msg.getPduUserData();
 						else ParallelMessage = (msg.getText().length() == 0 ? "" : msg.getText());
-                                                //end of my writing shamim
+                                                //end of my writing Shamim Ahmed Chowdhury
                                                 
-                                                // All code copied from iotest.java shamim
-                   
-                                                String[][] AreaName = new String[2][10];              
-                try 
-                    {
-                        String driver = "com.mysql.jdbc.Driver";
-                        Class.forName(driver).newInstance();
-                        Connection Parallelconn = null;
-                        Parallelconn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smslib?autoReconnect=true","root","");
-                        Statement s = Parallelconn.createStatement();
-                        ResultSet rs = s.executeQuery("SELECT *  FROM smsserver_parallel_device_configuration");         
-                        int i = 0;
-                        while(rs.next()) 
-                            {
-                                System.out.println("LPT_Device_original_name   : "+ rs.getString(2));
-                                AreaName[i][0] = rs.getString(2);
-                                System.out.println("LPT_Device_Mobile_name   : "+ rs.getString(3));
-                                AreaName[i][1] = rs.getString(3);
-                                for(int k=2;k<10;k++)
-                                    {                                           
-                                        System.out.println("Device Name : "+ rs.getString(k+2));
-                                        AreaName[i][k] = rs.getString(k+2);
-                                    }                               
-                                System.out.println();
-                                i++;
-                            }
-                        rs.close();
-                        s.close();
-                        Parallelconn.close();
-                    } 
-                catch(Exception e) 
-                    {
-                        System.out.println("Exception: "+ e);
-                        e.printStackTrace();
-                    }
-                //Start Check and tokenize the Message And Read and Write Lpt
+                                                // All code copied from iotest.java Shamim Ahmed Chowdhury
                                                 
+                                                AreaName = new String[rowCount][15]; 
                                                 
-                                                
-                                                
-                                                StringTokenizer Entertokens = new StringTokenizer(ParallelMessage, "\r",true);
-                   if(Entertokens.countTokens() == 1)
-                    {
-                        System.out.println("Enter Token is "+Entertokens.countTokens());
-                        StringTokenizer commatokens = new StringTokenizer(ParallelMessage, ",", true);
-                        if(commatokens.countTokens() == 1)
-                            {
-                                System.out.println("Comma Token is "+commatokens.countTokens());
-                                StringTokenizer spacetokens = new StringTokenizer(ParallelMessage, " ");
-                                if(spacetokens.countTokens() == 1)
-                                    {
-                                        System.out.println("Space Token is "+spacetokens.countTokens());
-                                        //String commandname = "Status";
-                                        if("STATUS".equals(ParallelMessage.trim().toUpperCase()))
-                                            {
-                                                // pst.setString(11, "STATUS");
-                                                //SendStatusMessage();
-                                                for (int j=0;j<2;j++) 
+                                                DelimeterArray[0] = ",";
+                                                DelimeterArray[1] = ".";
+                                                DelimeterArray[2] = ";";
+                                                DelimeterArray[3] = ":";
+                                                DelimeterArray[4] = "'";
+                                                DelimeterArray[5] = "\"";
+                                                DelimeterArray[6] = "/";
+                                                DelimeterArray[7] = "\\";
+                                                try 
+                                                {
+                        
+                                                    int i = 0;
+                                                    while(rs.next()) 
                                                     {
-                                                        Addr=0x378;
-                                                        do_read(Addr);
-                                                        String stat = do_read(Addr);
-                                                        int statlength = stat.length();
-                                                        System.out.println("Binary Number is "+stat+" And Stat Length is "+statlength);
-                                                        if(statlength<8)
-                                                            {
-                                                                for (int i=0;i<(8-statlength);i++)
-                                                                    {
-                                                                        stat = "0".concat(stat);
-                                                                        System.out.println("Concatenated string "+stat);
-                                                                    }
-                                                            }
-                                                        char[] chars = stat.toCharArray();
-                                                        String SmsOut = "";                               
-                                                        for(int i = 7; i >=0; i--)
-                                                            {
-                                                                if("1".equals(String.valueOf(chars[i])))
-                                                                    {
-                                                                        System.out.println(AreaName[j][9-i]+" is "+"ON");
-                                                                        if(i==7)
-                                                                            {
-                                                                                SmsOut = SmsOut.concat(AreaName[j][9-i]+" is "+"ON");
-                                                                            }
-                                                                        else
-                                                                            {
-                                                                                SmsOut = SmsOut.concat("\n"+AreaName[j][9-i]+" is "+"ON");
-                                                                            }
-                                                                        System.out.println("SMS STring Is: " + SmsOut);
-                                                                    }
-                                                                else
-                                                                    {
-                                                                        System.out.println(AreaName[j][9-i]+" is "+"OFF");
-                                                                        if(i==7)
-                                                                            {
-                                                                                SmsOut = SmsOut.concat(AreaName[j][9-i]+" is "+"OFF");
-                                                                            }
-                                                                        else
-                                                                            {
-                                                                                SmsOut = SmsOut.concat("\n"+AreaName[j][9-i]+" is "+"OFF");
-                                                                            }
-                               
-                                                                        System.out.println("SMS STring Is: " + SmsOut);
-                                                                    }      
-                                                                        
-                                                            }
-                                        
-                                                    }
-                                                                
-                                                for(int i = 12; i <52; i++)
-                                                    {
-                                                        //pst.setString(i,null)
-                                                        System.out.println("Field Number is "+i);
-                                                    }
-                                                System.out.println("Command is "+spacetokens.nextToken());
-                                            }
-                                        else
-                                            {
-                                            System.out.println("Command is not Status, Command is "+spacetokens.nextToken());
-                                            //SendErrorMessage();
-                                            }
-                            
-                                    }
-                                else
-                                    {
-                                        if(spacetokens.countTokens() >4)
-                                            {
-                                                System.out.println("Command Is More Than "+spacetokens.countTokens());
-                                                //  SendErrorMessage();
-                                            }
-                                        else
-                                            {
-                                                // pst.setString(11, null);
-                                                int fieldnumber = 12;
-                                                int PinNumber = 0;
-                                                String PinCommand = "";
-                                                int aPinNumberInt = 0;
-                                                while(spacetokens.hasMoreTokens())
-                                                    {
-                                                        if (fieldnumber==12)
-                                                            {
-                                                                //   pst.setString(fieldnumber, (subtokens.nextToken().length() == 0 ? "" : subtokens.nextToken()));
-                                                                //System.out.println("fieldNumber is "+fieldnumber+" and Spacetoken Is  "+spacetokens.nextToken());
-                             
-                                                                String TokenAreaName = spacetokens.nextToken();
-                                                                for(int i=0;i<2;i++)
-                                                                    {
-                                                                        if (AreaName[i][1].toUpperCase().equals(TokenAreaName.trim().toUpperCase()))
-                                                                            {
-                                                                                //PinNumber = AreaName[i][2];
-                                                                                System.out.println(TokenAreaName+" Device Mobile Name is found in database ");
-                                                                                String TokenPinName = spacetokens.nextToken();
-                                                                                for(int j=2;j<10;j++)
-                                                                                    {
-                                                                                        if (AreaName[i][j].toUpperCase().equals(TokenPinName.trim().toUpperCase()))
-                                                                                            {
-                                                                                                System.out.println(TokenPinName+" Pin Number is found in database ");
-                                                                                                PinNumber = j-1;
-                                                                                                System.out.println(PinNumber+" is Pin Number of "+TokenPinName+" found in database ");
-                                                                                            }
-                                                                                    }
-                                                                                // aPinNumberInt = Integer.parseInt(PinNumber);
-                                                                                aPinNumberInt = PinNumber;
-                                                                                if (aPinNumberInt!=0)
-                                                                                    {
-                                                                                        switch (aPinNumberInt)
-                                                                                            {
-                                                                                                case 1:
-                                                                                                    aPinNumberInt =7;
-                                                                                                    break;
-                                                                                                case 2:
-                                                                                                    aPinNumberInt =6;
-                                                                                                    break;
-                                                                                                case 3:
-                                                                                                    aPinNumberInt =5;
-                                                                                                    break;
-                                                                                                case 4:
-                                                                                                    aPinNumberInt =4;
-                                                                                                    break;
-                                                                                                case 5:
-                                                                                                    aPinNumberInt =3;
-                                                                                                    break;
-                                                                                                case 6:
-                                                                                                    aPinNumberInt =2;
-                                                                                                    break;
-                                                                                                case 7:
-                                                                                                    aPinNumberInt =1;
-                                                                                                    break;
-                                                                                                case 8:
-                                                                                                    aPinNumberInt =0;
-                                                                                                    break;
-                                                                                            }
-                                                                                    }
-                                                                                else if ("ALL".equals(TokenPinName.trim().toUpperCase()))
-                                                                                    {
-                                                                                        System.out.println(" Device Pin Number is ALL found in database And ");
-                                                                                        aPinNumberInt = 10;
-                                                                                    }
-                                                                                else
-                                                                                    {
-                                                                                        System.out.println(" Device Pin Number not found in database ");
-                                                                                        //  SendErrorMessage();
-                                                                                    }
-                                     
-                                                                            }
-                                                                        if ("".equals(TokenAreaName.trim()))
-                                                                            {
-                                                                                System.out.println(TokenAreaName+" LPT_Device_Mobile_Name Not found in database");
-                                                                                //  SendErrorMessage();
-                                                                            }
-                                                                    }
-                                                                                
-                                                            }
-                                                        else
-                                                            {
-                                                                String TokenCommandName =  spacetokens.nextToken();
-                                                                System.out.println("fieldNumber is "+fieldnumber+" and Spacetoken Is  "+TokenCommandName);  
+                                                        int d = 0;
+                                                        //int e = 1;
                                 
-                                                                if ("ON".equals(TokenCommandName.trim().toUpperCase()))
-                                                                    {
-                                                                        PinCommand = "1";
-                                                                        System.out.println("Command is "+TokenCommandName+" And PinCommand is "+PinCommand);
-                                                                        //  SendErrorMessage();
-                                                                    }
-                                                                else if("OFF".equals(TokenCommandName.trim().toUpperCase()))
-                                                                    {
-                                                                        PinCommand = "0";
-                                                                        System.out.println("Command is "+TokenCommandName+" And PinCommand is "+PinCommand);  
-                                                                    }
-                                                                else if("TG".equals(TokenCommandName.trim().toUpperCase()))
-                                                                    {
-                                                                        PinCommand = "1";
-                                                                        System.out.println("Command is "+TokenCommandName+" And PinCommand is "+PinCommand);
-                                                                    }
-                                                                else
-                                                                    {
-                                                                        System.out.println("Command is "+TokenCommandName+" And Command Is Not Supported");
-                                                                    }
-                                                            }
-                                                        fieldnumber++;                                                                                
+                                                        System.out.println("Building_Name   : "+ rs.getString("building_name"));
+                                                        AreaName[i][0] = rs.getString(3);
+                                                        System.out.println("Floor_Name   : "+ rs.getString("floor_name"));
+                                                        AreaName[i][1] = rs.getString(5);
+                                                        System.out.println("Flat_Name   : "+ rs.getString("flat_name"));
+                                                        AreaName[i][2] = rs.getString(7);
+                                                        System.out.println("Room_Name   : "+ rs.getString("room_name"));
+                                                        AreaName[i][3] = rs.getString(9);
+                                                        System.out.println("Host_Address   : "+ rs.getString("host_address"));
+                                                        AreaName[i][4] = rs.getString(11);
+                                                        System.out.println("Device_Name   : "+ rs.getString("device_name"));
+                                                        AreaName[i][5] = rs.getString(14);
+                                                        System.out.println("Device_Address   : "+ rs.getString("device_address"));
+                                                        AreaName[i][6] = rs.getString(15);
+                                                        for(int k=7;k<15;k++)
+                                                        {                                                                                                                  
+                                                            //System.out.println("Equipment_ID : "+ rs.getString(k+9+d));
+                                                            //AreaName[i][k+d] = rs.getString(k+9+d);
+                                                            System.out.println("Equipment_Name : "+ rs.getString(k+10+d));
+                                                            AreaName[i][k] = rs.getString(k+10+d);
+                                                            d++;
+                                                           // e++;
+                                                        }                               
+                                                        System.out.println();
+                                                        i++;                                                                                                                                                           
                                                     }
-                                                if(aPinNumberInt!=0)
-                                                        {
-                                                            Addr=0x378;
-                                                            lpt = new pPort();
-                                                            do_read_register(Addr);
-                                                            String stat = do_read_register(Addr);
-                                                            int statlength = stat.length();
-                                                            System.out.println("Binary Number is "+stat+" And Stat Length is "+statlength);
-                                                            if(statlength<8)
+                                                    //This loop is to get Host address to check whether this SMS is for this host or not
+                                                    int w=0;
+                                                    for(int x=0;x<rowCount;x++)
+                                                        {                                                                                            
+                                                            for(int j=0;j<15;j++)
                                                                 {
-                                                                    for (int i=0;i<(8-statlength);i++)
-                                                                        {
-                                                                            stat = "0".concat(stat);
-                                                                            System.out.println("Concatenated string "+stat);
+                                                                    if (AreaName[i][j].toUpperCase().equals(Host.trim().toUpperCase()))
+                                                                        {                                                                                                                                                                                                                                                                                                                                   
+                                                                            for(int k=0;k<15;k++)
+                                                                                {
+                                                                                    HostMessageString[w][k] = AreaName[i][k];
+                                                                                }                                                                                                            
                                                                         }
                                                                 }
-                                                            
-                                                                    char[] chars = stat.toCharArray();
-                                                                    System.out.println("Binary String Before replacement: "+stat);
-                                                                    //int aPinNumberInt = Integer.parseInt(PinNumber);
-                                                                    char firstLetter = PinCommand.charAt(0);
-                                                                    if (aPinNumberInt<=8)
-                                                                        {                                                                         
-                                                                            stat = replaceCharAt(stat, aPinNumberInt, firstLetter); 
-                                                                            System.out.println("Binary String After replacement: "+stat);
+                                                            w++;
+                                                        }                                                                                                                         
+                                                } 
+                                                catch(Exception e) 
+                                                {
+                                                    System.out.println("Exception: "+ e);
+                                                    e.printStackTrace();
+                                                }
+                                                //Start Check and tokenize the Message And Read and Write Lpt   
+                
+                                                int F = 0;
+                                                while(ParallelMessage.length()>0)
+                                                {
+                                                    String FirstMessage = ParallelMessage;   
+                                                    StringTokenizer Entertokens = new StringTokenizer(ParallelMessage, "\r",true);
+                                                    if (Entertokens.countTokens() == 1)
+                                                    {
+                                                        for (int i=0;i<DelimeterArray.length;i++)  
+                                                        {
+                                                            StringTokenizer Whichtokens = new StringTokenizer(ParallelMessage, DelimeterArray[i],true);
+                                                            if(Whichtokens.countTokens() > 1)
+                                                            {                  
+                                                                CompareMessage = Whichtokens.nextToken();
+                                                                System.out.println("Message Token Is "+CompareMessage);
+                                                                if (CompareMessage.length()<FirstMessage.length())
+                                                                {
+                                                                    FirstMessage = CompareMessage;
+                                                                    System.out.println("First Message Token Is "+FirstMessage);
+                                                                }
+                                                            }
+                                                        }
+                                                        MessageString[F] = FirstMessage;
+                                                        System.out.println("MessageString"+F+" "+MessageString[F]);
+                                                        if (ParallelMessage.length()>FirstMessage.length())
+                                                        {
+                                                            ParallelMessage = ParallelMessage.substring(FirstMessage.length()+1);
+                                                            System.out.println(" Message Substr Is "+ParallelMessage);
+                                                        }
+                                                        else if (ParallelMessage.length()==FirstMessage.length())
+                                                        {
+                                                            ParallelMessage = ParallelMessage.substring(FirstMessage.length());
+                                                            //System.out.println(" Message Substr Is "+Message);
+                                                        }                      
+                                                        F++;
+                                                    }               
+                                                }
+                
+                                                for(int G=0;G<MessageString.length;G++)
+                                                {
+                                                    if (MessageString[G]==null)
+                                                        {
+                                                        
+                                                        }
+                                                    else
+                                                        {
+                                                            StringTokenizer Spacetokens = new StringTokenizer(MessageString[G], " ", true);
+                                                            if(Spacetokens.countTokens() == 1)
+                                                                {
+                                                                    System.out.println("Space Token is "+Spacetokens.countTokens());                                                                                                     
+                                                                    //String commandname = "Status";
+                                                                    if("STATUS".equals(Spacetokens.nextToken().trim().toUpperCase()))
+                                                                        {
+                                                                            // pst.setString(11, "STATUS");
+                                                                            for(int i =0;i<4;i++)
+                                                                                {
+                                                                                    AllMessageString = AllMessageString.concat(" "+HostMessageString[0][i]);
+                                                                                }
+                                                                            StatusCommand(AllMessageString,"",HostMessageString);                                                                                                                                                              
                                                                         }
                                                                     else
                                                                         {
-                                                                            if ("0".equals(PinCommand.trim().toUpperCase()))
+                                                                            System.out.println("Command is not Status, Command is "+Spacetokens.nextToken());
+                                                                            //SendErrorMessage("Command is not Status, Command is "+Spacetokens.nextToken());
+                                                                        }                            
+                                                                }
+                                                            else
+                                                                {
+                                                                    if(Spacetokens.countTokens() >6)
+                                                                        {
+                                                                            System.out.println("Command Is More Than "+Spacetokens.countTokens());
+                                                                            //  SendErrorMessage();
+                                                                        }
+                                                                    else
+                                                                        {
+                                                                            // pst.setString(11, null);
+                                                                            int fieldnumber = 12;                                                                        
+                                                                            while(Spacetokens.hasMoreTokens())
                                                                                 {
-                                                                                    stat = "00000000";
-                                                                                    System.out.println("Binary String After replacement: "+stat);
-                                                                                }
-                                                                            else
-                                                                                {
-                                                                                    stat = "11111111";
-                                                                                    System.out.println("Binary String After replacement: "+stat);
+                                                                                    if (fieldnumber==12)
+                                                                                        {
+                                                                                            //   pst.setString(fieldnumber, (subtokens.nextToken().length() == 0 ? "" : subtokens.nextToken()));
+                                                                                            //System.out.println("fieldNumber is "+fieldnumber+" and Spacetoken Is  "+spacetokens.nextToken());
+                                                                
+                                                                                            String FirstSpaceTokenSMSCommandName = Spacetokens.nextToken();
+                                                                                            System.out.println("FieldNumber is "+fieldnumber+" and FirstSpaceTokenSMSCommandName Is  "+FirstSpaceTokenSMSCommandName);                                                                                                                             
+                                                                
+                                                                                            if ("STATUS".equals(FirstSpaceTokenSMSCommandName.trim().toUpperCase()))
+                                                                                                {
+                                                                                                    System.out.println(FirstSpaceTokenSMSCommandName.trim().toUpperCase()+" FirstSpaceTokenSMSCommandName is found in database ");
+                                                                                                    rs = cmd.executeQuery("SELECT COUNT(*) AS CNT FROM parallel_comm_port_view ");
+                                                                                                    String[] TempHostString = new String[rowCount];
+                                                                                                    String[] ExistTempHostString = new String[rowCount];
+                                                                                                    boolean exist = false;
+                                                                                                    for (int a=0;a<rowCount;a++)
+                                                                                                        {
+                                                                                                            TempHostString[a] = AreaName[a][11];
+                                                                                                            exist = false;
+                                                                                                            for (int b=0;b<rowCount;b++)
+                                                                                                            {
+                                                                                                                if(TempHostString[a].equalsIgnoreCase(ExistTempHostString[b]))
+                                                                                                                        {
+                                                                                                                            exist = true;
+                                                                                                                        }
+                                                                                                            }
+                                                                                                            if(exist)
+                                                                                                                {
+                                                                                                                
+                                                                                                                }
+                                                                                                            else
+                                                                                                                {
+                                                                                                                    ExistTempHostString[a] = TempHostString[a];
+                                                                                                                }   
+                                                                                                        }
+                                                                                                    for (int c=0; c<rowCount;c++)
+                                                                                                        {
+                                                                                                            if (ExistTempHostString[c] == null)
+                                                                                                                {
+                                                                                                                    
+                                                                                                                }
+                                                                                                            else
+                                                                                                                {
+                                                                                                                    HostCount++;
+                                                                                                                }
+                                                                                                            
+                                                                                                        }
+                                                                                                    String SecondSpaceTokenSMSCommandName = Spacetokens.nextToken();
+                                                                                                    StatusCommand(FirstSpaceTokenSMSCommandName,SecondSpaceTokenSMSCommandName,HostMessageString);                                                                
+                                                                                                }
+                                                                                            //This elseif is for FirstSpaceTokenSMSCommend is not STATUS And It is ALL
+                                                                                            else if ("ALL".equals(FirstSpaceTokenSMSCommandName.trim().toUpperCase()))
+                                                                                                {
+                                                                                                    System.out.println(" Device Pin Number is ALL found in database And ");                                                                                                   
+                                                                                                    System.out.println(FirstSpaceTokenSMSCommandName.trim().toUpperCase()+" FirstSpaceTokenSMSCommandName is found in database ");
+                                                                                                    String SecondSpaceTokenSMSCommandName = Spacetokens.nextToken();
+                                                                                                    WriteDeviceAllCommand(FirstSpaceTokenSMSCommandName, HostMessageString, SecondSpaceTokenSMSCommandName);                                                                                                                                                                                                                                                             
+                                                                                                }
+                                                                                            //This else is for FirstSpaceTokenSMSCommend is not STATUS or ALL
+                                                                                            else
+                                                                                                {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+                                                                                                    // This Loop is to check whether FirstSpaceTokenSMSCommand is related with this host or not? this host                                                                                                                            
+                                                                                                    if (MessageInHost(HostMessageString,FirstSpaceTokenSMSCommandName))
+                                                                                                        {
+                                                                                                            AllMessageString = FirstSpaceTokenSMSCommandName;
+                                                                                                            System.out.println("FieldNumber is "+fieldnumber+" and FirstSpaceTokenSMSCommandName Is  "+FirstSpaceTokenSMSCommandName.trim().toUpperCase()+" FirstSpaceTokenSMSCommandName is found in database ");
+                                                                                                            String SecondSpaceTokenSMSCommandName = Spacetokens.nextToken();
+                                                                                                            if ("STATUS".equals(SecondSpaceTokenSMSCommandName.trim().toUpperCase()))
+                                                                                                                {
+                                                                                                                    System.out.println(SecondSpaceTokenSMSCommandName.trim().toUpperCase()+" SecondSpaceTokenSMSCommandName is found in database ");
+                                                                                                                    String ThirdSpaceTokenSMSCommandName = Spacetokens.nextToken();
+                                                                                                                    StatusCommand(AllMessageString, ThirdSpaceTokenSMSCommandName, HostMessageString);
+                                                                                                                }
+                                                                                                            else if("ALL".equals(SecondSpaceTokenSMSCommandName.trim().toUpperCase()))
+                                                                                                                {
+                                                                                                                    System.out.println(SecondSpaceTokenSMSCommandName.trim().toUpperCase()+" SecondSpaceTokenSMSCommandName is found in database ");
+                                                                                                                    String ThirdSpaceTokenSMSCommandName = Spacetokens.nextToken();
+                                                                                                                    WriteDeviceAllCommand(FirstSpaceTokenSMSCommandName, HostMessageString, ThirdSpaceTokenSMSCommandName);
+                                                                                                                }
+                                                                                                            else if(EquipmentCommand(SecondSpaceTokenSMSCommandName.trim().toUpperCase()))
+                                                                                                                {
+                                                                                                                    WriteEquipment(HostMessageString, FirstSpaceTokenSMSCommandName, SecondSpaceTokenSMSCommandName.trim().toUpperCase());
+                                                                                                                }
+                                                                                                            else
+                                                                                                                {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+                                                                                                                    // This Loop is to check whether SecondSpaceTokenSMSCommand is related with this host or not? this host                                                                                                                                                                                    
+                                                                                                                    if (MessageInHost(HostMessageString,SecondSpaceTokenSMSCommandName))
+                                                                                                                        {                                                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                            AllMessageString = AllMessageString.concat(" "+SecondSpaceTokenSMSCommandName);
+                                                                                                                            System.out.println(SecondSpaceTokenSMSCommandName.trim().toUpperCase()+" SecondSpaceTokenSMSCommandName is found in database ");
+                                                                                                                            String ThirdSpaceTokenSMSCommandName = Spacetokens.nextToken();
+                                                                                                                            if ("STATUS".equals(ThirdSpaceTokenSMSCommandName.trim().toUpperCase()))
+                                                                                                                                {
+                                                                                                                                    System.out.println(ThirdSpaceTokenSMSCommandName.trim().toUpperCase()+" ThirdSpaceTokenSMSCommandName is found in database ");
+                                                                                                                                    String FourthSpaceTokenSMSCommandName = Spacetokens.nextToken();
+                                                                                                                                    StatusCommand(AllMessageString,FourthSpaceTokenSMSCommandName,HostMessageString);
+                                                                                                                                }
+                                                                                                                            else if("ALL".equals(ThirdSpaceTokenSMSCommandName.trim().toUpperCase()))
+                                                                                                                                {
+                                                                                                                                    System.out.println(ThirdSpaceTokenSMSCommandName.trim().toUpperCase()+" ThirdSpaceTokenSMSCommandName is found in database ");
+                                                                                                                                    String FourthSpaceTokenSMSCommandName = Spacetokens.nextToken();
+                                                                                                                                    WriteDeviceAllCommand(FirstSpaceTokenSMSCommandName, HostMessageString, FourthSpaceTokenSMSCommandName);
+                                                                                                                                }
+                                                                                                                            else if(EquipmentCommand(ThirdSpaceTokenSMSCommandName.trim().toUpperCase()))
+                                                                                                                                {
+                                                                                                                                    WriteEquipment(HostMessageString, SecondSpaceTokenSMSCommandName.trim().toUpperCase(), ThirdSpaceTokenSMSCommandName.trim().toUpperCase());
+                                                                                                                                }
+                                                                                                                            else
+                                                                                                                                {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+                                                                                                                                    // This Loop is to check whether SecondSpaceTokenSMSCommand is related with this host or not? this host                                                                                                                                                                                                            
+                                                                                                                                    if (MessageInHost(HostMessageString,ThirdSpaceTokenSMSCommandName))
+                                                                                                                                        {
+                                                                                                                                            AllMessageString = AllMessageString.concat(" "+ThirdSpaceTokenSMSCommandName);
+                                                                                                                                            System.out.println(ThirdSpaceTokenSMSCommandName.trim().toUpperCase()+" ThirdSpaceTokenSMSCommandName is found in database ");
+                                                                                                                                            String FourthSpaceTokenSMSCommandName = Spacetokens.nextToken();
+                                                                                                                                            if ("STATUS".equals(FourthSpaceTokenSMSCommandName.trim().toUpperCase()))
+                                                                                                                                                {
+                                                                                                                                                    System.out.println(FourthSpaceTokenSMSCommandName.trim().toUpperCase()+" FourthSpaceTokenSMSCommandName is found in database ");
+                                                                                                                                                    String FifthSpaceTokenSMSCommandName = Spacetokens.nextToken();
+                                                                                                                                                    StatusCommand(AllMessageString,FifthSpaceTokenSMSCommandName,HostMessageString);
+                                                                                                                                                }
+                                                                                                                                            else if("ALL".equals(FourthSpaceTokenSMSCommandName.trim().toUpperCase()))
+                                                                                                                                                {
+                                                                                                                                                    System.out.println(FourthSpaceTokenSMSCommandName.trim().toUpperCase()+" FourthSpaceTokenSMSCommandName is found in database ");
+                                                                                                                                                    String FifthSpaceTokenSMSCommandName = Spacetokens.nextToken();
+                                                                                                                                                    WriteDeviceAllCommand(FirstSpaceTokenSMSCommandName, HostMessageString, FifthSpaceTokenSMSCommandName);
+                                                                                                                                                }
+                                                                                                                                            else if(EquipmentCommand(FourthSpaceTokenSMSCommandName.trim().toUpperCase()))
+                                                                                                                                                {
+                                                                                                                                                    WriteEquipment(HostMessageString, ThirdSpaceTokenSMSCommandName.trim().toUpperCase(), FourthSpaceTokenSMSCommandName.trim().toUpperCase());
+                                                                                                                                                }
+                                                                                                                                            else
+                                                                                                                                                {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+                                                                                                                                                    if (MessageInHost(HostMessageString,FourthSpaceTokenSMSCommandName))
+                                                                                                                                                        {
+                                                                                                                                                            AllMessageString = AllMessageString.concat(" "+FourthSpaceTokenSMSCommandName);
+                                                                                                                                                            System.out.println(FourthSpaceTokenSMSCommandName.trim().toUpperCase()+" FourthSpaceTokenSMSCommandName is found in database ");
+                                                                                                                                                            String FifthSpaceTokenSMSCommandName = Spacetokens.nextToken();
+                                                                                                                                                            if ("STATUS".equals(FifthSpaceTokenSMSCommandName.trim().toUpperCase()))
+                                                                                                                                                                {
+                                                                                                                                                                    System.out.println(FifthSpaceTokenSMSCommandName.trim().toUpperCase()+" FifthSpaceTokenSMSCommandName is found in database ");
+                                                                                                                                                                    String SixthSpaceTokenSMSCommandName = Spacetokens.nextToken();
+                                                                                                                                                                    StatusCommand(AllMessageString, SixthSpaceTokenSMSCommandName, HostMessageString);
+                                                                                                                                                                }
+                                                                                                                                                            else if("ALL".equals(FifthSpaceTokenSMSCommandName.trim().toUpperCase()))
+                                                                                                                                                                {
+                                                                                                                                                                    System.out.println(FifthSpaceTokenSMSCommandName.trim().toUpperCase()+" FifthSpaceTokenSMSCommandName is found in database ");
+                                                                                                                                                                    String SixthSpaceTokenSMSCommandName = Spacetokens.nextToken();
+                                                                                                                                                                    WriteDeviceAllCommand(FirstSpaceTokenSMSCommandName, HostMessageString, SixthSpaceTokenSMSCommandName);
+                                                                                                                                                                }
+                                                                                                                                                            else if(EquipmentCommand(FifthSpaceTokenSMSCommandName.trim().toUpperCase()))
+                                                                                                                                                                {
+                                                                                                                                                                    WriteEquipment(HostMessageString, FourthSpaceTokenSMSCommandName.trim().toUpperCase(), FifthSpaceTokenSMSCommandName.trim().toUpperCase());
+                                                                                                                                                                }
+                                                                                                                                                            else
+                                                                                                                                                                {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+                                                                                                                                                                    AllMessageString = AllMessageString.concat(" "+FifthSpaceTokenSMSCommandName);
+                                                                                                                                                                    System.out.println(FifthSpaceTokenSMSCommandName.trim().toUpperCase()+" FifthSpaceTokenSMSCommandName is found in database ");
+                                                                                                                                                                    String SixthSpaceTokenSMSCommandName = Spacetokens.nextToken();
+                                                                                                                                                                    if ("STATUS".equals(SixthSpaceTokenSMSCommandName.trim().toUpperCase()))
+                                                                                                                                                                        {
+                                                                                                                                                                            System.out.println(SixthSpaceTokenSMSCommandName.trim().toUpperCase()+" SixthSpaceTokenSMSCommandName is found in database ");                                                                                                                                                                            
+                                                                                                                                                                            StatusCommand(AllMessageString, "", HostMessageString);
+                                                                                                                                                                        }                                                                                                                                                                    
+                                                                                                                                                                    else if(EquipmentCommand(SixthSpaceTokenSMSCommandName.trim().toUpperCase()))
+                                                                                                                                                                        {
+                                                                                                                                                                            WriteEquipment(HostMessageString, FifthSpaceTokenSMSCommandName.trim().toUpperCase(), SixthSpaceTokenSMSCommandName.trim().toUpperCase());
+                                                                                                                                                                        }
+                                                                                                                                                                    else
+                                                                                                                                                                        {
+                                                                                                                                                                            System.out.println(SixthSpaceTokenSMSCommandName.trim().toUpperCase()+" SixthSpaceTokenSMSCommandName is not found in database ");
+                                                                                                                                                                            //SendErrorMessage(SixthSpaceTokenSMSCommandName.trim().toUpperCase()+" is not found in database ");
+                                                                                                                                                                        }                                                                                                                                                                                                        
+                                                                                                                                                                }                                                                                                                                                                                       
+                                                                                                                                                        }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                }                                                                                                                                                                                                                                                                                                                                                                                                         
+                                                                                                                                        }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                }                                                                                                                                        
+                                                                                                                        }
+                                                                                                                }                                                                                                                
+                                                                                                        }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+                                                                                                }
+                                                                                        }
                                                                                 }
                                                                         }
-                                                            Addr=0x378;
-                                                            String writedatum = Integer.toHexString(Integer.parseInt(stat,2));
-                                                            System.out.println("Check To See hexstring : "+writedatum);
-                                                            //datum = writedatum;
-                                                            datum = Short.parseShort(writedatum, 16) ;
-                                                            //Short sObj2 = Short.valueOf(str);
-                                                            do_write(Addr,datum);
-                                                            stat = do_read_register(Addr);
-                                                            System.out.println("Check To See if we write properly: "+stat);
-                                                        }
-                                                if(fieldnumber==14)
-                                                    {
-                                                        for(int i = 14; i <52; i++)
-                                                            {
-                                                                //pst.setString(i,null)
-                                                                System.out.println("Field Number is "+i);
-                                                            }
-                                                    }
-                                                else
-                                                    {
-                                                        if(fieldnumber==15)
-                                                            {
-                                                                System.out.println("Unfinished command. Need another token");
-                                                                //  SendErrorMessage();                                                                
-                                                            }
-                                                        else
-                                                            {                                                                     
-                                                                for(int i = 16; i <52; i++)
-                                                                    {
-                                                                        //pst.setString(i,null)
-                                                                        System.out.println("Field Number is "+i);
-                                                                    }
-                                                            }
-                                                        System.out.println("We are in tg mode. Field Number is ");
-                                                    }
-                                            }
-                                    }
-                            }
-                        else
-                            {
-                                if(commatokens.countTokens() > 7)
-                                    {
-                                        // SendErrorMessage();
-                                    }
-                                else
-                                    {
-                                        System.out.println("Comma Token is "+commatokens.countTokens());
-                                        int fieldnumber = 12;
-                                        int firstset = 1;
-                                        int separatorset = 1;
-                                        boolean ISItFirstComma = true;
-                                        while(commatokens.hasMoreTokens())
-                                            {
-                                                // System.out.println(commatokens.nextToken());                                                    
-                                                //  pst.setString(fieldnumber, (tokens.nextToken().length() == 0 ? "" : "Enter"));
-                                                                                
-                                                String linecut = commatokens.nextToken().trim();
-                                                StringTokenizer spacetokens = new StringTokenizer(linecut, " ");
-                                                int highestToken = spacetokens.countTokens();
-                                                System.out.println("Highest Space Token in a Comma Token is: "+highestToken);
-                                                String FirstSpaceToken = spacetokens.nextToken();                                        
-                                                                            
-                                                if(",".equals(FirstSpaceToken.trim()) & ISItFirstComma & fieldnumber==12)
-                                                    {
-                                                        ISItFirstComma = true;
-                                                        //SendErrorMessage("You Put Comma First"); 
-                                                        System.out.println("You Put a Comma before anything....Separator_"+separatorset+" : "+FirstSpaceToken);
-                                                        separatorset++;
-                                                        fieldnumber++;
-                                                        System.out.println("FieldNumber is :"+fieldnumber);
-                                                    }
-                                                                           
-                                                else if(",".equals(FirstSpaceToken.trim()) & ISItFirstComma)
-                                                    {
-                                                        ISItFirstComma = true;
-                                                        //SendErrorMessage("You Put Comma First"); 
-                                                        System.out.println("You Put a Comma after a comma....Separator_"+separatorset+" : "+FirstSpaceToken);
-                                                        separatorset++;
-                                                        fieldnumber++;
-                                                        System.out.println("FieldNumber is :"+fieldnumber);
-                                                    }
-                                                else if(",".equals(FirstSpaceToken.trim()))
-                                                    {
-                                                        ISItFirstComma = true;   
-                                                        System.out.println("Separator_"+separatorset+" : "+FirstSpaceToken);
-                                                        separatorset++;
-                                                        fieldnumber++;
-                                                        System.out.println("FieldNumber is :"+fieldnumber);   
-                                                    }
-                                                else
-                                                    {
-                                                        if(highestToken==4)
-                                                            {
-                                                                String DB_CONN_STRING = "jdbc:mysql://localhost:3306/smslib";
-                                                                String DRIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
-                                                                String USER_NAME = "root";
-                                                                String PASSWORD = "";
-                                                                                    
-                                                                Connection result = null;
-                                                                try 
-                                                                    {
-                                                                        Class.forName(DRIVER_CLASS_NAME).newInstance();
-                                                                    }
-                                                                catch (Exception ex)
-                                                                    {
-                                                                        log("Check classpath. Cannot load db driver: " + DRIVER_CLASS_NAME);
-                                                                    }
-                                                                                    
-                                                                try 
-                                                                    {
-                                                                        result = DriverManager.getConnection(DB_CONN_STRING, USER_NAME, PASSWORD);
-                                                                    }
-                                                                catch (SQLException e)
-                                                                    {
-                                                                        log( "Driver loaded, but cannot connect to db: " + DB_CONN_STRING);
-                                                                    }
-                                                                                    // return result;
-                                                                                    
-                                                                String query = "";
-                                                                try 
-                                                                    {
-                                                                        Connection Parallelcon = DriverManager.getConnection("jdbc:mysql://localhost:3306/smslib", "root", "");
-                                                                                    
-                                                                        //Connection con = DriverManager.getConnection("jdbc:com.mysql.jdbc.Driver:smslib", "smslib","smslib");
-                                                                                    
-                                                                        Statement stmt = Parallelcon.createStatement();
-                                                                        ResultSet rs = stmt.executeQuery("SELECT *  FROM smsserver_parallel_device_configuration");
-                                                                        while (rs.next()) 
-                                                                            {
-                                                                                //int x = rs.getInt("a");
-                                                                                String s = rs.getString("name");
-                                                                                System.out.println("Device_name_"+firstset+" : "+s);
-                                                                                //float f = rs.getFloat("c");
-                                                                            }
-                                                                                    
-                                                                    }
-                                                                catch (SQLException ex) 
-                                                                    {
-                                                                        ex.printStackTrace();
-                                                                        System.out.println(query);
-                                                                    }
-                                                                                    
-                                                                System.out.println("Device_name_"+firstset+" : "+FirstSpaceToken);
-                                                                System.out.println("Device_name_"+firstset+" : "+"//pst.setString("+fieldnumber+",null)");
-                                                                fieldnumber++;
-                                                                System.out.println("FieldNumber is :"+fieldnumber);
-                                                                System.out.println("Command_name_"+firstset+" : "+spacetokens.nextToken());
-                                                                fieldnumber++;
-                                                                System.out.println("FieldNumber is :"+fieldnumber);
-                                                                System.out.println("from_toggle_"+firstset+" : "+spacetokens.nextToken());
-                                                                fieldnumber++;
-                                                                System.out.println("FieldNumber is :"+fieldnumber);
-                                                                System.out.println("to_toggle_"+firstset+" : "+spacetokens.nextToken());
-                                                                fieldnumber++;
-                                                                System.out.println("FieldNumber is :"+fieldnumber);
-                                                                switch (highestToken)
-                                                                    {
-                                                                        case 1:
-                                                                                  
-                                                                            System.out.println("Only One Word.."+spacetokens.nextToken()+" use Two words");
-                                                                            //SendErrorMessage("Only one word"); 
-                                                                            //fieldnumber= fieldnumber+3;
-                                                                            break;
-                                                                        case 2:
-                                                                                        
-                                                                            fieldnumber= fieldnumber+2;
-                                                                            break;
-                                                                        case 3:
-                                                                            fieldnumber= fieldnumber+1;
-                                                                            break;
-                                                                                    
-                                                                    }
-                                                                                    
-                                                            }
-                                                        else
-                                                            {
-                                                                ISItFirstComma = false;
-                                                                System.out.println("Device_name_"+firstset+" : "+FirstSpaceToken);
-                                                                fieldnumber++;
-                                                                System.out.println("FieldNumber is :"+fieldnumber);
-                                                                System.out.println("Command_name_"+firstset+" : "+spacetokens.nextToken());
-                                                                fieldnumber++;
-                                                                System.out.println("FieldNumber is :"+fieldnumber);
-                                                                //pst.setString(i,null)
-                                                                System.out.println("from_toggle_"+firstset+" : "+"//pst.setString("+fieldnumber+",null)");
-                                                                fieldnumber++;
-                                                                System.out.println("FieldNumber is :"+fieldnumber);
-                                                                System.out.println("to_toggle_"+firstset+" : "+"//pst.setString("+fieldnumber+",null)");
-                                                                fieldnumber++;
-                                                                System.out.println("FieldNumber is :"+fieldnumber);
-                                                                firstset++;
-                                                            }    
-                                                    }
-                                            }
-      
-                                    }
-     
-                            }
-                    }
-                                                
-                                                
-                                                // end of all code copied from java shamim
-                                                
-                                                
-						pst.setString(10, msg.getGatewayId());
-						pst.executeUpdate();
-					}
+                                                                }
+                                                        }                                                                                                                     
+                                                    // end of all code copied from java Shamim Ahmed Chowdhury                                                                                                
+                                                    pst.setString(10, msg.getGatewayId());
+                                                    pst.setString(11, msg.getGatewayAddress());
+                                                    pst.setString(12,getServer().getHostAddress());
+                                                    pst.executeUpdate();
+                                                }
+                                        }
 				}
+                                                                  
+                                rs.close();
 				pst.close();
 				con.commit();
 				break;
@@ -782,8 +670,11 @@ public class ParallelDatabase extends Interface<Integer>
 				Thread.sleep(sqlDelayMultiplier * SQL_DELAY);
 				sqlDelayMultiplier *= 2;
 			}
-		}
-	}
+                }
+        }
+            
+	
+
 
 	@Override
 	public Collection<OutboundMessage> getMessagesToSend() throws Exception
@@ -1058,7 +949,7 @@ public class ParallelDatabase extends Interface<Integer>
 		}
 	}
         
-        // this is my copy from iotest.java shamim
+        // this is my copy from iotest.java Shamim Ahmed Chowdhury
         
         static String do_read(short address)
             {
@@ -1078,7 +969,6 @@ public class ParallelDatabase extends Interface<Integer>
             {
                 // Read from the port
                 datum = (short) lpt.input(address);
-
                 // Notify the console
                 System.out.println("Read Port: " + Integer.toHexString(address) +
                               " = " +  Integer.toHexString(datum)+" And Binary String is " +  Integer.toBinaryString(datum));
@@ -1112,5 +1002,494 @@ public class ParallelDatabase extends Interface<Integer>
                 return s.substring(0, pos) + c + s.substring(pos + 1);
             }
         
+        public  void StatusCommand(String FirstSpaceTokenSMSCommandName, String SecondSpaceTokenSMSCommandName, String AreaName[][] ) throws InterruptedException
+            {                                                                                                                    
+                if ("ON".equals(SecondSpaceTokenSMSCommandName.trim().toUpperCase()))
+                    {                       
+                        System.out.println("SecondSpaceTokenSMSCommandName is "+SecondSpaceTokenSMSCommandName+" And StatusCommand is "+SecondSpaceTokenSMSCommandName);
+                        System.out.println("SMS String is : "+SendStatusMessage(ParallelMessage, AreaName,SecondSpaceTokenSMSCommandName)+" End Of SMS String");
+                    }
+                else if("OFF".equals(SecondSpaceTokenSMSCommandName.trim().toUpperCase()))
+                    {                        
+                        System.out.println("SecondSpaceTokenSMSCommandName is "+SecondSpaceTokenSMSCommandName+" And StatusCommand is "+SecondSpaceTokenSMSCommandName);
+                        System.out.println("SMS String is : "+SendStatusMessage(ParallelMessage, AreaName,SecondSpaceTokenSMSCommandName)+" End Of SMS STring");
+                    }
+                else if("TG".equals(SecondSpaceTokenSMSCommandName.trim().toUpperCase()))
+                    {                        
+                        System.out.println("SecondSpaceTokenSMSCommandName is "+SecondSpaceTokenSMSCommandName+" And StatusCommand is "+SecondSpaceTokenSMSCommandName);
+                        System.out.println("SMS String is : "+SendStatusMessage(ParallelMessage, AreaName,SecondSpaceTokenSMSCommandName)+" End Of SMS String");
+                    }
+                else
+                    {
+                        System.out.println("SecondSpaceTokenSMSCommandName is "+SecondSpaceTokenSMSCommandName+" And StatusCommand Is : "+SecondSpaceTokenSMSCommandName +" And StatusCommand Is Not Supported");
+                        //  SendErrorMessage();                                                                                
+                    }                                         
+            } 
+                        
+        public  String SendStatusMessage(String AllMessageString, String AreaName[][], String StatusCommand ) throws InterruptedException
+                {
+                    String SmsOut = AllMessageString;               
+                    for (int j=0;j<2;j++)
+                        {
+                            Addr=Short.parseShort(HostMessageString[0][6], 16);
+                            do_read(Addr);
+                            String stat = do_read(Addr);
+                            int statlength = stat.length();
+                            System.out.println("Binary Number is "+stat+" And Stat Length is "+statlength);
+                            if(statlength<8)
+                                {
+                                    for (int i=0;i<(8-statlength);i++)
+                                        {
+                                            stat = "0".concat(stat);
+                                            
+                                        }
+                                }
+                            System.out.println("Concatenated string "+stat);
+                            char[] chars = stat.toCharArray();                              
+                            for(int i = 7; i >=0; i--)
+                                {
+                                    if("1".equals(String.valueOf(chars[i])))
+                                        {
+                                            // System.out.println(AreaName[j][9-i]+" is "+"ON");
+                                            if(i==7)
+                                                {
+                                                    if ("OFF".equals(StatusCommand.trim().toUpperCase()))
+                                                        {
+                                                        } 
+                                                    else    
+                                                        {
+                                                            SmsOut = SmsOut.concat(AreaName[j][9-i]+" is "+"ON");
+                                                        }
+                                                }
+                                            else
+                                               {
+                                                    if ("OFF".equals(StatusCommand.trim().toUpperCase()))
+                                                        {
+                                                        } 
+                                                    else    
+                                                        {
+                                                            SmsOut = SmsOut.concat("\n"+AreaName[j][9-i]+" is "+"ON");
+                                                        }
+                                               }
+                                        }                                        
+                                    else
+                                        {
+                                            // System.out.println(AreaName[j][9-i]+" is "+"OFF");
+                                            if(i==7)
+                                                {
+                                                    if ("ON".equals(StatusCommand.trim().toUpperCase()))
+                                                        {                                        
+                                                        } 
+                                                    else    
+                                                        {
+                                                            SmsOut = SmsOut.concat(AreaName[j][9-i]+" is "+"OFF");
+                                                        }                                                                                                              
+                                                }
+                                            else
+                                                {
+                                                    if ("ON".equals(StatusCommand.trim().toUpperCase()))
+                                                        {                                       
+                                                        } 
+                                                    else    
+                                                        {
+                                                            SmsOut = SmsOut.concat("\n"+AreaName[j][9-i]+" is "+"OFF");
+                                                        }                                                            
+                                                }                               
+                                          //  System.out.println("SMS String Is: " + SmsOut);
+                                        }                                                                              
+                                }
+                        }
+                    Connection con = null;
+                    try
+			{
+                            String textCheck = null;
+                            int Host_Address_Count = 0;
+                            con = getDbConnection();
+                            Statement cmd;
+                            PreparedStatement pst;
+                            cmd = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                            ResultSet rs;
+                            rs = cmd.executeQuery("select id, type, recipient, text, create_date, originator, encoding, status_report, flash_sms, src_port, dst_port, sent_date, ref_no, priority, status, errors, gateway_id, gateway_address, host_address, host_address_counter from " + getProperty("tables.sms_out", "smsserver_parallel_out") + " where type = 'N' AND status = 'U' order by priority desc, id");
+                            while (rs.next())
+				{
+                                    textCheck = rs.getString("text");
+                                    for(int t=0;t<4;t++)
+                                        {
+                                            if (!textCheck.contains(HostMessageString[0][t])) 
+                                            {
+                                                textCheck = HostMessageString[0][t].concat(" "+textCheck);   
+                                            } 
+                                            else 
+                                            {
+                                            }
+                                        }
+                                }
+                            
+                            if((Host_Address_Count+1) == HostCount)
+                                {
+                                    Host_Address_Count++;
+                                    cmd.executeUpdate("update " + getProperty("tables.sms_out", "smsserver_parallel_out") + " set status = 'U' where status = 'Q' AND set type = 'O' where type = 'N'");
+                                }
+                            else
+                                {
+                                    Host_Address_Count++;
+                                    cmd.executeUpdate("update " + getProperty("tables.sms_out", "smsserver_parallel_out") + " set status = 'U' where status = 'Q'");
+                                }
+                            
+                            con.commit();
+                            rs.close();
+                            cmd.close();
+                        }
+			catch (SQLException e)
+			{
+				try
+				{
+					if (con != null) con.close();
+					closeDbConnection();
+				}
+				catch (Exception innerE)
+				{
+				}
+				Logger.getInstance().logError(String.format("SQL failure, will retry in %d seconds...", (sqlDelayMultiplier * (SQL_DELAY / 1000))), e, null);
+				Thread.sleep(sqlDelayMultiplier * SQL_DELAY);
+				sqlDelayMultiplier *= 2;
+			}
+                    return SmsOut;
+                }
+        
+         public  void WriteDeviceAllCommand(String LPTDeviceName, String AreaName[][], String DeviceCommand )
+                {                   
+                    char firstLetter;
+                    String DeviceAllPinCommand;
+                    DeviceAllPinCommand = "";
+                    
+                    if ("ON".equals(DeviceCommand.trim().toUpperCase()))
+                        {                                        
+                            System.out.println("AllCommandName is "+DeviceCommand);
+                            DeviceAllPinCommand = "11111111";
+                            System.out.println("Binary String Before replacement: "+DeviceAllPinCommand);                           
+                        }
+                    else if("OFF".equals(DeviceCommand.trim().toUpperCase()))
+                        {                           
+                            System.out.println("ThirdSpaceTokenSMSCommandName is "+DeviceCommand+" And StatusCommand is "+DeviceCommand);
+                            DeviceAllPinCommand = "00000000";
+                            System.out.println("Binary String Before replacement: "+DeviceAllPinCommand);                            
+                        }
+                    else if("TG".equals(DeviceCommand.trim().toUpperCase()))
+                        {                                                        
+                            Addr=Short.parseShort(HostMessageString[0][6], 16) ;
+                            DeviceAllPinCommand = do_read_register(Addr);
+                            int PinStatuslength = DeviceAllPinCommand.length();
+                            System.out.println("Binary Number is "+DeviceAllPinCommand+" And DeviceAllPinStatus Length is "+PinStatuslength);
+                            if(PinStatuslength<8)
+                                {
+                                    for (int c=0;c<(8-PinStatuslength);c++)
+                                        {
+                                            DeviceAllPinCommand = "0".concat(DeviceAllPinCommand);
+                                            System.out.println("Concatenated string "+DeviceAllPinCommand);
+                                        }
+                                }
+                            for(int k=0;k<8;k++)
+                                {
+                                    char CharPosForToggle = DeviceAllPinCommand.charAt(k);
+                                    if(CharPosForToggle=='0')
+                                        {
+                                            firstLetter = '1';
+                                        }
+                                    else
+                                        {
+                                            firstLetter = '0';
+                                        }
+                                    DeviceAllPinCommand = replaceCharAt(DeviceAllPinCommand, k, firstLetter);                                                         
+                                }                            
+                        }
+                    String writedatum = Integer.toHexString(Integer.parseInt(DeviceAllPinCommand,2));
+                    System.out.println("Check To See hexstring : "+writedatum);                  
+                    datum = Short.parseShort(writedatum, 16) ;                    
+                    do_write(Addr,datum);
+                    DeviceAllPinCommand = do_read_register(Addr);
+                    System.out.println("Check To See if we write properly: "+DeviceAllPinCommand);                                         
+                } 
+                
+        public  void AllStatusCommand(String AllMessageString, String StatusCommand, String AreaName[][] ) throws InterruptedException
+            {                                                                                                                    
+                if ("ON".equals(StatusCommand.trim().toUpperCase()))
+                    {                       
+                        System.out.println("SecondSpaceTokenSMSCommandName is "+StatusCommand+" And StatusCommand is "+StatusCommand);
+                        System.out.println("SMS String is : "+SendStatusMessage(AllMessageString, AreaName, StatusCommand)+" End Of SMS String");
+                    }
+                else if("OFF".equals(StatusCommand.trim().toUpperCase()))
+                    {                        
+                        System.out.println("SecondSpaceTokenSMSCommandName is "+StatusCommand+" And StatusCommand is "+StatusCommand);
+                        System.out.println("SMS String is : "+SendStatusMessage(AllMessageString, AreaName, StatusCommand)+" End Of SMS STring");
+                    }
+                else if("TG".equals(StatusCommand.trim().toUpperCase()))
+                    {                        
+                        System.out.println("SecondSpaceTokenSMSCommandName is "+StatusCommand+" And StatusCommand is "+StatusCommand);
+                        System.out.println("SMS String is : "+SendStatusMessage(AllMessageString, AreaName, StatusCommand)+" End Of SMS String");
+                    }
+                else if("".equals(StatusCommand.trim().toUpperCase()))
+                    {                        
+                        System.out.println("SecondSpaceTokenSMSCommandName is "+StatusCommand+" And StatusCommand is "+StatusCommand);
+                        System.out.println("SMS String is : "+SendStatusMessage(AllMessageString, AreaName, StatusCommand)+" End Of SMS String");
+                    }
+                else
+                    {
+                        System.out.println("SecondSpaceTokenSMSCommandName is "+StatusCommand+" And StatusCommand Is : "+StatusCommand +" And StatusCommand Is Not Supported");
+                        //  SendErrorMessage("SecondSpaceTokenSMSCommandName is "+StatusCommand+" And StatusCommand Is : "+StatusCommand +" And StatusCommand Is Not Supported");                                                                                
+                    }                                         
+            }
+        
+        public  boolean MessageInHost(String[][] HostMessageString, String SpaceTokenSMSCommandName )
+            {
+                boolean InHost;
+                InHost = false;
+                for(int s=0;s<128;s++)
+                    {
+                        for(int t=0;t<15;t++)
+                            {
+                                if (HostMessageString[s][t].toUpperCase().trim().equals(SpaceTokenSMSCommandName.trim().toUpperCase()))
+                                    {
+                                        InHost = true;
+                                    }
+                            }
+                    }
+                return InHost;   
+            }
+        
+        public  boolean MessageInDataBase(String[][] DataBaseMessageString, String SpaceTokenSMSCommandName )
+            {
+                boolean InHost;
+                InHost = false;
+                for(int s=0;s<rowCount;s++)
+                    {
+                        for(int t=0;t<15;t++)
+                            {
+                                if (DataBaseMessageString[s][t].toUpperCase().trim().equals(SpaceTokenSMSCommandName.trim().toUpperCase()))
+                                    {
+                                        InHost = true;
+                                    }
+                            }
+                    }
+                return InHost;   
+            }
+                
+        public int ReturnHostCount(String FirstSpaceCommandName, String SecondSpaceCommandName, String ThirdSpaceCommandName, String FourthSpaceCommandName, String FifthSpaceCommandName )
+            {                
+                String[] TempHostString = new String[rowCount];
+                String[] ExistTempHostString = new String[rowCount];
+                boolean exist, First, Second, Third, Fourth, Fifth =  false;                                                                              
+                HostCount = 0;
+                for (int a=0;a<rowCount;a++)
+                    {
+                        for (int b=0;b<15;b++)
+                            {
+                                if(FirstSpaceCommandName.equalsIgnoreCase(AreaName[a][b]))
+                                    {
+                                        First = true;
+                                        TempHostString[b] = AreaName[a][11];
+                                    }
+                                else if(SecondSpaceCommandName.equalsIgnoreCase(AreaName[a][b]))
+                                    {
+                                        Second = true;
+                                        TempHostString[b] = AreaName[a][11];
+                                    }
+                                else if(ThirdSpaceCommandName.equalsIgnoreCase(AreaName[a][b]))
+                                    {
+                                        Third = true;
+                                        TempHostString[b] = AreaName[a][11];
+                                    }
+                                else if(FourthSpaceCommandName.equalsIgnoreCase(AreaName[a][b]))
+                                    {
+                                        Fourth = true;                                        
+                                        TempHostString[b] = AreaName[a][11];
+                                    }
+                                else if(FifthSpaceCommandName.equalsIgnoreCase(AreaName[a][b]))
+                                    {
+                                        Fifth = true;
+                                        TempHostString[b] = AreaName[a][11];
+                                    }                                                                                                                                                                                                                        
+                            }
+                        TempHostString[a] = AreaName[a][11];
+                        exist = false;
+                        for (int b=0;b<rowCount;b++)
+                            {
+                                if(TempHostString[a].equalsIgnoreCase(ExistTempHostString[b]))
+                                    {
+                                        exist = true;
+                                    }                                        
+                            }
+                        if(exist)
+                            {
+                                                           
+                            }
+                        else
+                            {
+                                ExistTempHostString[a] = TempHostString[a];
+                            }   
+                    }
+                for (int c=0; c<rowCount;c++)
+                    {
+                        if (ExistTempHostString[c] == null)
+                            {
+                                                                                
+                            }
+                        else
+                            {
+                                HostCount++;
+                            }
+                                                                                                            
+                    }
+                
+                return HostCount;
+            }
+                
+        public  boolean EquipmentCommand(String EquipmentCommandName) throws InterruptedException
+            {                                                                                                                    
+                boolean EquipmentCommand = false;
+                if ("ON".equals(EquipmentCommandName.trim().toUpperCase()))
+                    {                       
+                        System.out.println("SpaceTokenSMSCommandName is "+EquipmentCommandName+" And StatusCommand is "+EquipmentCommandName);
+                        EquipmentCommand = true;
+                    }
+                else if("OFF".equals(EquipmentCommandName.trim().toUpperCase()))
+                    {                        
+                        System.out.println("SecondSpaceTokenSMSCommandName is "+EquipmentCommandName+" And StatusCommand is "+EquipmentCommandName);
+                        EquipmentCommand = true;
+                    }
+                else if("TG".equals(EquipmentCommandName.trim().toUpperCase()))
+                    {                        
+                        System.out.println("SecondSpaceTokenSMSCommandName is "+EquipmentCommandName+" And StatusCommand is "+EquipmentCommandName);
+                        EquipmentCommand = true;
+                    }                
+                else
+                    {
+                        System.out.println("SecondSpaceTokenSMSCommandName is "+EquipmentCommandName+" And StatusCommand Is : "+EquipmentCommandName +" And StatusCommand Is Not Supported");
+                        //  SendErrorMessage("SecondSpaceTokenSMSCommandName is "+StatusCommand+" And StatusCommand Is : "+StatusCommand +" And StatusCommand Is Not Supported");                                                                                
+                    }
+                return EquipmentCommand; 
+            }
+
+    /**
+     *
+     * @param DataBaseString
+     * @param EquipmentName
+     * @param EquipmentCommand
+     */
+    public  void WriteEquipment(String[][] DataBaseString, String EquipmentName, String EquipmentCommand )
+                {                   
+                    char firstLetter = '0';
+                    char CharPosForToggle = '0';                    
+                    String stat = "";                    
+                    int aPinNumberInt = 0;
+                    int PinNumber = 0;
+                    String PinCommand = "";
+                    for(int i=0;i<rowCount;i++)
+                        {
+                            for(int j=7;j<15;j++)
+                                {
+                                    if (DataBaseString[i][j].toUpperCase().equals(EquipmentName.trim().toUpperCase()))
+                                        {
+                                            System.out.println(EquipmentName.trim().toUpperCase()+" Equipment is found in database ");
+                                            PinNumber = j-6;
+                                            System.out.println(PinNumber+" is Pin Number of "+EquipmentName+" found in database ");
+                                        }
+                                }
+                        }
+                    // aPinNumberInt = Integer.parseInt(PinNumber);
+                    aPinNumberInt = PinNumber;
+                    if (aPinNumberInt!=0)
+                        {
+                            switch (aPinNumberInt)
+                                {
+                                    case 1:
+                                        aPinNumberInt =7;
+                                        break;
+                                    case 2:
+                                        aPinNumberInt =6;
+                                        break;
+                                    case 3:
+                                        aPinNumberInt =5;
+                                        break;
+                                    case 4:
+                                        aPinNumberInt =4;
+                                        break;
+                                    case 5:
+                                        aPinNumberInt =3;
+                                        break;
+                                    case 6:
+                                        aPinNumberInt =2;
+                                        break;
+                                    case 7:
+                                        aPinNumberInt =1;
+                                        break;
+                                    case 8:
+                                        aPinNumberInt =0;
+                                        break;
+                                }
+                        }
+                                                            
+                     if ("ON".equals(EquipmentCommand.trim().toUpperCase()))
+                        {
+                            PinCommand = "1";
+                            firstLetter = PinCommand.charAt(0);
+                            System.out.println("Command is "+EquipmentCommand+" And PinCommand is "+PinCommand);                           
+                        }
+                     else if("OFF".equals(EquipmentCommand.trim().toUpperCase()))
+                        {
+                            PinCommand = "0";
+                            firstLetter = PinCommand.charAt(0);
+                            System.out.println("Command is "+EquipmentCommand+" And PinCommand is "+PinCommand);  
+                        }
+                     else if("TG".equals(EquipmentCommand.trim().toUpperCase()))
+                        {
+                            PinCommand = "2";                           
+                            System.out.println("Command is "+EquipmentCommand+" And PinCommand is "+PinCommand);
+                        }
+                                          
+                     stat = do_read_register(Addr);
+                     System.out.println("Binary Number is "+stat+" And Stat Length is "+stat.length());
+                     if(stat.length()<8)
+                        {
+                            for (int i=0;i<(8-stat.length());i++)
+                                {
+                                    stat = "0".concat(stat);
+                                    System.out.println("Concatenated string "+stat);
+                                }
+                        }                                                            
+                     char[] chars = stat.toCharArray();
+                     System.out.println("Binary String Before replacement: "+stat);                                                                                    
+                     
+                     if (aPinNumberInt<=7)
+                        {                                                                         
+                            if ("2".equals(PinCommand.trim().toUpperCase()))
+                                {
+                                    CharPosForToggle = stat.charAt(aPinNumberInt-1);
+                                    if(CharPosForToggle=='0')
+                                        {
+                                            firstLetter = '1';
+                                        }
+                                    else
+                                        {
+                                            firstLetter = '0';
+                                        }
+                                    stat = replaceCharAt(stat, aPinNumberInt, firstLetter);
+                                    System.out.println("Binary String After replacement: "+stat);
+                                }
+                            else
+                                {
+                                    stat = replaceCharAt(stat, aPinNumberInt, firstLetter); 
+                                    System.out.println("Binary String After replacement: "+stat);
+                                }
+                        }
+                                                                                  
+                    Addr=0x378;
+                    String writedatum = Integer.toHexString(Integer.parseInt(stat,2));
+                    System.out.println("Check To See hexstring : "+writedatum);                    
+                    datum = Short.parseShort(writedatum, 16) ;                    
+                    do_write(Addr,datum);
+                    stat = do_read_register(Addr);
+                    System.out.println("Check To See if we write properly: "+stat);                                                                                                                                                                                     
+                }                         
         // end of my copy from iotest.java shamim
 }

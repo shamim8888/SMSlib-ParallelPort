@@ -14,7 +14,7 @@
 {	display: block;
 	margin: 0 1px 0 0;
 	padding: 7px 10px;
-	width: 60px;
+	width: 120px;
 	color: #FFF;
 	text-align: center;
 	text-decoration: none}
@@ -23,7 +23,7 @@
 {	background: #49A3FF}
 
 #sddm div
-{	position: absolute;
+{	position: relative;
 	visibility: hidden;
 	margin: 0;
 	padding: 0;

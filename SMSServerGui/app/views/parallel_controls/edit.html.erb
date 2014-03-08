@@ -1,0 +1,72 @@
+<h1>Editing Parallel Configuration</h1>
+
+<% form_for(@parallel_management) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :buillding_name %><br />    
+    <%= collection_select(:parallel_management, :building_id, Building.all, :id, :name, {:prompt => true} ) %>   
+  </p>
+  <p>
+    <%= f.label :floor_name %><br />
+    <%= collection_select(:parallel_management, :floor_id, Floor.all, :id, :name, {:prompt => true} ) %>    
+  </p>
+  <p>
+    <%= f.label :flat_name %><br />
+    <%= collection_select(:parallel_management, :flat_id, Flat.all, :id, :name, {:prompt => true} ) %>    
+  </p>
+  <p>
+    <%= f.label :room_name %><br />
+    <%= collection_select(:parallel_management, :room_id, Room.all, :id, :name, {:prompt => true} ) %>    
+  </p>
+  <p>
+    <%= f.label :host_name %><br />
+    <%= collection_select(:parallel_management, :host_id, Host.all, :id, :name, {:prompt => true} ) %>    
+  </p>
+  <p>
+    <%= f.label :host_address %><br />
+    <%= collection_select(:parallel_management, :host_id, Host.all, :id, :address, {:prompt => true} ) %>    
+  </p>
+  <p>
+    <%= f.label :device_name %><br />
+    <%= collection_select(:parallel_management, :device_id, Device.all, :id, :name, {:prompt => true} ) %>    
+  </p>
+  <p>
+    <%= f.label :equipment_name1 %><br />
+    <%= collection_select(:parallel_management, :equipment1_id, Equipment.all, :id, :name, {:prompt => true} ) %>    
+  </p>
+  <p>
+    <%= f.label :equipment_name2 %><br />
+    <%= collection_select(:parallel_management, :equipment2_id, Equipment.all, :id, :name, {:prompt => true} ) %>   
+  </p>
+  <p>
+    <%= f.label :equipment_name3 %><br />
+    <%= collection_select(:parallel_management, :equipment3_id, Equipment.all, :id, :name, {:prompt => true} ) %>    
+  </p>
+  <p>
+    <%= f.label :equipment_name4 %><br />
+    <%= collection_select(:parallel_management, :equipment4_id, Equipment.all, :id, :name, {:prompt => true} ) %>    
+  </p>
+  <p>
+    <%= f.label :equipment_name5 %><br />
+    <%= collection_select(:parallel_management, :equipment5_id, Equipment.all, :id, :name, {:prompt => true} ) %>    
+  </p>
+  <p>
+    <%= f.label :equipment_name6 %><br />
+    <%= collection_select(:parallel_management, :equipment6_id, Equipment.all, :id, :name, {:prompt => true} ) %>    
+  </p>
+  <p>
+    <%= f.label :equipment_name7 %><br />
+    <%= collection_select(:parallel_management, :equipment7_id, Equipment.all, :id, :name, {:prompt => true} ) %>    
+  </p>
+  <p>
+    <%= f.label :equipment_name8 %><br />
+    <%= collection_select(:parallel_management, :equipment8_id, Equipment.all, :id, :name, {:prompt => true} ) %>    
+  </p>
+  <p>
+    <%= f.submit 'Update' %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @parallel_management %> |
+<%= link_to 'Back', parallel_management_path %>

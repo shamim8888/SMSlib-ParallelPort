@@ -1,0 +1,10 @@
+<xml>
+<package name="usb-modeswitch">
+<release>2.0.1</release>
+<target>http://www.draisberghof.de/usb_modeswitch/usb-modeswitch-2.0.1.tar.bz2</target>
+</package>
+<package name="usb-modeswitch-data">
+<release>20131113</release>
+<target>http://www.draisberghof.de/usb_modeswitch/usb-modeswitch-data-20131113.tar.bz2</target>
+</package>
+</xml>

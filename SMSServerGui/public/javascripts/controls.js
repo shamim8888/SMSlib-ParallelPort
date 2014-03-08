@@ -61,7 +61,7 @@ Autocompleter.Base = Class.create({
     this.options.minChars     = this.options.minChars || 1;
     this.options.onShow       = this.options.onShow ||
       function(element, update){
-        if(!update.style.position || update.style.position=='absolute') {
+        if(!update.style.position || update.style.position==='absolute') {
           update.style.position = 'absolute';
           Position.clone(element, update, {
             setHeight: false,
@@ -73,7 +73,7 @@ Autocompleter.Base = Class.create({
     this.options.onHide = this.options.onHide ||
       function(element, update){ new Effect.Fade(update,{duration:0.15}) };
 
-    if(typeof(this.options.tokens) == 'string')
+    if(typeof(this.options.tokens) === 'string')
       this.options.tokens = new Array(this.options.tokens);
     // Force carriage returns as token delimiters anyway
     if (!this.options.tokens.include('\n'))
@@ -90,10 +90,10 @@ Autocompleter.Base = Class.create({
   },
 
   show: function() {
-    if(Element.getStyle(this.update, 'display')=='none') this.options.onShow(this.element, this.update);
+    if(Element.getStyle(this.update, 'display')==='none') this.options.onShow(this.element, this.update);
     if(!this.iefix &&
       (Prototype.Browser.IE) &&
-      (Element.getStyle(this.update, 'position')=='absolute')) {
+      (Element.getStyle(this.update, 'position')==='absolute')) {
       new Insertion.After(this.update,
        '<iframe id="' + this.update.id + '_iefix" '+
        'style="display:none;position:absolute;filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" ' +
@@ -859,9 +859,9 @@ Ajax.InPlaceEditor.prototype.initialize.dealWithDeprecatedOptions = function(opt
     options[name] = expr;
   };
   fallback('cancelControl', (options.cancelLink ? 'link' : (options.cancelButton ? 'button' :
-    options.cancelLink == options.cancelButton == false ? false : undefined)));
+    options.cancelLink === options.cancelButton === false ? false : undefined)));
   fallback('okControl', (options.okLink ? 'link' : (options.okButton ? 'button' :
-    options.okLink == options.okButton == false ? false : undefined)));
+    options.okLink === options.okButton === false ? false : undefined)));
   fallback('highlightColor', options.highlightcolor);
   fallback('highlightEndColor', options.highlightendcolor);
 };

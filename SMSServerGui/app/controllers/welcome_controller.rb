@@ -21,7 +21,11 @@ class WelcomeController < ApplicationController
       mailsubject = params[ :send_sms ][ :mailsubject ]
       im = params[ :send_sms ][ :imaddress ]
       text = params[ :send_sms ][ :text ]
-
+      im_from = session[ :im_address ]
+      im_array = im_from.split('@')
+      im_host = im_array[1]
+      im_client = im_array[0]
+      email_from = session[ :email_address ]  
 
       if numbers.empty?
              @sms_out_obj.errors.add( :Recipient," : Recipient field has Invalid Numbers. Please check..."  )
@@ -53,7 +57,7 @@ class WelcomeController < ApplicationController
               sms_out_tmp.recipient = number
               sms_out_tmp.email_address = mail_address_to
               sms_out_tmp.email_subject = mailsubject
-              sms_out_tmp.message_address = im
+              sms_out_tmp.im_address = im
               sms_out_tmp.text =  text
               sms_out_tmp.priority = params[ :scheduled_on ]
               sms_out_tmp.flash_sms = params[ :sms_type ]
@@ -70,7 +74,7 @@ class WelcomeController < ApplicationController
            
           # Mail Section Start Shamim Ahmed Chowdhury
            smsmail = Mail.new do
-              from  "shamim@localhost"
+              from  email_from
               to     mail_address_to
               subject   mailsubject
               body      text
@@ -78,11 +82,12 @@ class WelcomeController < ApplicationController
             end
             #End Of Mail Section Shamim Ahmed Chowdhury
            smsmail.deliver!
-           # Start Messaging Shamim Ahmed Chowdhury
-            sender_jid = Jabber::JID.new('smslib@ns1')
+          
+          # Start Im Messaging Shamim Ahmed Chowdhury
+            sender_jid = Jabber::JID.new(im_from)
             client = Jabber::Client.new(sender_jid)
-            client.connect('ns1')
-            client.auth('smslib')
+            client.connect(im_host)
+            client.auth(im_client)
 
             client.send(Jabber::Presence.new.set_show(:chat))
 

@@ -1,6 +1,15 @@
 ActionController::Routing::Routes.draw do |map|
   map.resources :users
-
+  map.resources :buildings
+  map.resources :floors
+  map.resources :flats
+  map.resources :rooms
+  map.resources :hosts
+  map.resources :devices
+  map.resources :equipments
+  map.resources :parallel_managements
+  map.resources :parallel_configurations
+  map.resources :parallel_controls
   map.resources :outgoing_sms_number_groups
 
   map.resources :outgoing_sms_content_groups

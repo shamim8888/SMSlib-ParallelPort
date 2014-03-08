@@ -1,0 +1,2 @@
+module ParallelDataBaseHelper
+end

@@ -18,5 +18,11 @@ class User < ActiveRecord::Base
        hashed_password = hash_password( password || '' )
        find( :first,:conditions => [ "user_name =? and password =?",name,hashed_password] )
     end
-
+    
+    def self.email_address( name,password )
+       hashed_password = hash_password( password || '' )
+       @email_address = find( :first,:conditions => [ "user_name =? and password =?",name,hashed_password] )  
+    end
+    
+    #@email_address = find( :first,:conditions => [ "user_name =? and password =?",name,hashed_password] )  
 end

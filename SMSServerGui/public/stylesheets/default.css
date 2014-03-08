@@ -5,7 +5,7 @@ body {
 color:#000000;
 background: #EAEBD8;
 font-family:Helvetica,Arial,sans-serif;
-font-size:87.5%;
+font-size:72%;
 line-height:1.5em;
 }
 
@@ -24,7 +24,7 @@ body
     */
 
 #all
-{	width: 750px; 
+{	width: 1280px; 
 	margin: 10px auto;}
 
 	#top
@@ -133,7 +133,8 @@ body
 
 /*************************************************/
 h1
-{	margin: 1;
+{	text-align: center; 
+        margin: 1;
 	padding: 3 0 10px 0;
 	font: 1.5em  arial, sans-serif;
 	color: #060054}
@@ -157,7 +158,8 @@ h4
 
 
 p
-{	margin: 0;
+{	text-transform: capitalize;
+        margin: 0;
 	padding: 0 0 10px 0;
 	font: 1.1em trebuchet ms, georgia, tahoma, sans-serif;
 	line-height: 150%;

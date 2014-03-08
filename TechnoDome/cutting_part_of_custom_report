@@ -1,0 +1,148 @@
+                       $moneyresult=pg_exec("select * from money_official_view where account_id = $clientid ");
+
+                       $moneynumrows = pg_numrows($moneyresult);
+
+                       if ( $moneynumrows !=0)
+                       {
+
+                               print("<div align=\"center\">");
+
+                               print ("<TABLE  border=1 align=justify valign =top>");  // Starting of the parent table
+
+
+
+                               print ("<TR>");
+
+
+                                           if ($clientchoose=="Official")
+                                                   {
+                                                      for ($column_num =0; $column_num<6;$column_num++)
+                                                            {
+
+                                                           print ("<TH BGCOLOR=\"#aabf5c\"> $field_name_official[$column_num]</TH>");
+
+                                                           }
+                                                   }
+
+
+                             print ("</TR>");
+
+
+
+
+                             for($tablerow=0;$tablerow<$moneynumrows;$tablerow++)
+
+                             {
+                               $moneytrip = pg_fetch_row($moneyresult,$tablerow);
+
+                               $voucherid = $moneytrip[0];
+                               $voucherno = $moneytrip[2];
+                               $voucherdate = $moneytrip[1];
+                               $accountname = $moneytrip[4];
+
+                               $amount = $moneytrip [5];
+                               $comment = $moneytrip[13];
+                               $offaccountname = $moneytrip[11];
+                               $purticulars =  "From ";
+                               $purticulars.="$accountname";
+                               $purticulars.="  For  ";
+                               $purticulars.=" $offaccountname";
+                               $purticulars.=" $comment";
+
+
+
+                             // print($voucherdate);
+
+
+
+                                       echo ("<TR align = justify  valign = top BGCOLOR=\"#6fff0\">");
+
+                                       print("<TD>$voucherdate</TD>");
+                                       print("<TD>$voucherno</TD>");
+                                       print("<TD>$purticulars</TD>");
+                                       print("<TD align =right>$amount</TD>");
+                                       print("<TD></TD>");
+
+                                       print ("</TR>");
+
+                              }   // inner for loop ends
+
+
+
+
+
+                             ///// Calculate total debit amount///////
+
+                             $drpayresult=pg_exec("select sum(amount) from money_receipt where (account_id = $clientid  and carry_sale_flag='Official') " );
+
+                             $drnumrows = pg_numrows($drpayresult);
+
+                                        if ($drnumrows==0)
+                                           {
+
+                                            $drtotal=0;
+
+
+                                           }
+
+                                        else
+                                           {
+                                               $drrow = pg_fetch_row($drpayresult,0);
+                                               $drtotal = $drrow[0];
+
+                                           }
+
+
+                             ////// Debit amount calculation ends///////////
+
+
+
+
+                             $creditquery =  pg_exec("select receive_total, money_fair_rate,quantity_one,quantity_two,money_fair_rate_two,receive_balance from cargo_schedule where ship_id=$shipid and trip_id=$trip_counter and received_from=$clientid");
+
+                             $creditnumrows = pg_numrows($creditquery);
+
+
+
+
+                             if ( $creditnumrows !=0)
+
+                                     {
+                                       $creditcount = pg_fetch_row($creditquery,0);
+
+                                       $creditamount = $creditcount[0];
+                                       $cargofairrate = $creditcount[1];
+                                       $quantityone = $creditcount[2];
+                                       $quantitytwo = $creditcount[3];
+                                       $cargofairratetwo = $creditcount[4];
+                                       $balanceamount          = $creditcount[5];
+
+                                       $cargoparticulars = "        ( $quantityone X          $cargofairrate       )+ ($quantitytwo  X          $cargofairratetwo                )" ;
+                                      // $cargoparticulars.= "";
+
+                                       $balanceamount = $creditamount - $drtotal;
+
+
+
+
+                                       print("<TR><TD></TD><TD></TD><TD align =center bgcolor = #C07368><B>Total</B></TD><TD></TD><TD align =right  bgcolor = #B7B7E8>$drtotal</TD></TR>");
+
+                                       print("<TD></TD>");
+                                       print("<TD></TD>");
+                                       print("<TD align=center bgcolor = #E6DBB5>         $cargoparticulars         </TD>");
+
+                                       print("<TD align=right bgcolor = #DBE47C>$creditamount</TD>");
+
+
+                                       print("<TR><TD></TD><TD></TD><TD align=center bgcolor=#668181><B><font color =#E5E8B1 >Balance</font></B><TD></TD><TD></TD><TD align=right bgcolor = #FBEEAB><B>$balanceamount</B></TD>");
+
+                                     }
+
+
+                             print("<br><br>");
+
+                       }   /// if numrows condition ends
+
+                   print ("</Table></div>");    // Table ends here
+
+                   print("<br><br><br>");

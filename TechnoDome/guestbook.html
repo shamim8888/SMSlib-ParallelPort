@@ -1,0 +1,53 @@
+<HTML>
+
+<HEAD><TITLE>Add to our Guestbook</TITLE></HEAD>
+
+<BODY>
+
+<CENTER><H1>Add to our Guestbook</H1></CENTER>
+
+Fill in the blanks below to add to our Guestbook.  The only fields that you 
+
+have to fill in are the comments and name section.  Thanks!
+
+<HR>
+
+<FORM METHOD=POST ACTION="/perl/guestbook.pl">
+
+  <TABLE BORDER=0 CELLPADDING=10>
+
+    <TR>
+
+      <TD>Your Name:</TD>
+
+      <TD><INPUT TYPE=text NAME=name SIZE=30></TD>
+
+    </TR>
+
+      
+
+<TR>
+
+      <TD>Email:</TD>
+
+      <TD><INPUT TYPE=text NAME=email SIZE=40></TD>
+
+    </TR>
+
+    <TR>
+
+      <TD VALIGN=top>Comments:</TD>
+
+      <TD><TEXTAREA NAME=comments COLS=60 ROWS=4></TEXTAREA></TD>
+
+    </TR>
+
+  </TABLE>
+
+  <INPUT TYPE=submit VALUE="Add Entry"> <INPUT TYPE=reset>
+
+</FORM>
+
+</BODY>
+
+</HTML>

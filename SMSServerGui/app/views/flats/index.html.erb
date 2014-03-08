@@ -1,0 +1,21 @@
+<h1>Listing Flats</h1>
+
+<table>
+  <tr>
+    <th>Flat Id</th>
+    <th>Flat Name</th>
+  </tr>
+
+<% @flats.each do |flat| %>
+  <tr>
+    <td><%=h flat.id %></td>
+    <td><%=h flat.name %></td>
+    <td><%= link_to 'Edit', edit_flat_path(flat) %></td>
+    <td><%= link_to 'Destroy', flat, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New flat', new_flat_path %>

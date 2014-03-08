@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jnlp href="launch.jnlp" spec="1.0+">
+    <information>
+        <title>Database Application Example</title>
+        <vendor>TechnoDome (PPT)</vendor>
+        <homepage href="http://appframework.dev.java.net"/>
+        <description>An empty application shell to be used as a basis for Swing applications working with databases</description>
+        <description kind="short">Database Application Example</description>
+        
+        
+    </information>
+    <update check="always"/>
+    
+    <resources>
+        <j2se version="1.5+"/>
+        <jar href="DesktopApplication1.jar" main="true"/>
+        
+        
+    <jar href="lib/appframework-1.0.3.jar"/>
+<jar href="lib/swing-worker-1.1.jar"/>
+<jar href="lib/beansbinding-1.2.1.jar"/>
+<jar href="lib/toplink-essentials.jar"/>
+<jar href="lib/toplink-essentials-agent.jar"/>
+<jar href="lib/derbyclient.jar"/>
+</resources>
+    <application-desc main-class="desktopapplication1.DesktopApplication1">
+        
+    </application-desc>
+</jnlp>

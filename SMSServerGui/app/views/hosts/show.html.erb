@@ -1,0 +1,19 @@
+<p>
+  <b>Host Id:</b>
+  <%=h @host.id %>
+</p>
+
+<p>
+  <b>Host Name:</b>
+  <%=h @host.name %>
+</p>
+
+<p>
+  <b>Host Address:</b>
+  <%=h @host.address %>
+</p>
+
+
+
+<%= link_to 'Edit', edit_host_path(@host) %> |
+<%= link_to 'Back', hosts_path %>

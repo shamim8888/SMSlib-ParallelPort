@@ -59,6 +59,8 @@ public class InboundMessage extends Message
         // Added by me to add Modem Serial Number Shamim Ahmed Chowdhury
         private String GatewayAddress;
        // private String HostAddress;
+        
+        private String from;
 	private int mpRefNo;
 
 	private int mpMaxNo;
@@ -89,7 +91,25 @@ public class InboundMessage extends Message
 		setMpMemIndex(-1);
 		setSmscNumber(null);
 	}
-
+        
+        public InboundMessage(Date date, String myOriginator, String text, String myGatewayAddress)
+	{
+		super(MessageTypes.INBOUND, date, text);
+		setOriginator(myOriginator);
+		//setMemIndex(myMemIndex);
+                setGatewayAddress(myGatewayAddress);
+                //setHostAddress(myHostAddress);
+		//setMemLocation(myMemLocation);
+		setMpRefNo(0);
+		setMpMaxNo(0);
+		setMpSeqNo(0);
+		setMpMemIndex(-1);
+		setSmscNumber(null);
+	}
+        
+        
+        
+        
 	public InboundMessage(MessageTypes type, int myMemIndex, String myMemLocation, String myGatewayAddress)
 	{
 		super(type, null, null);
@@ -436,4 +456,34 @@ public class InboundMessage extends Message
 	{
 		this.smscNumber = mySmscNumber;
 	}
+        /**
+	 * Receives the custom originator string. Set it to empty string to leave
+	 * the default behavior.
+	 * 
+	 * @return The custom originator string.
+	 * @see #setFrom(String)
+	 */
+	public String getFrom()
+	{
+		return this.from;
+	}
+
+	/**
+	 * Sets the custom originator string. Some gateways allow you to define a
+	 * custom string as the originator. When the message arrives at the
+	 * recipient, the latter will not see your number but this string.
+	 * <p>
+	 * Note that this functionality is not supported on GSM modems / phones. It
+	 * is supported on most bulk sms operators.
+	 * 
+	 * @param myFrom
+	 *            The custom originator string.
+	 * @see #getFrom()
+	 */
+	public void setFrom(String myFrom)
+	{
+		this.from = myFrom;
+	}
+        
+        
 }

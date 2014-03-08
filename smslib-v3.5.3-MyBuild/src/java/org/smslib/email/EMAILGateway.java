@@ -50,6 +50,7 @@ import org.smslib.smsserver.SMSServer;
 import org.smslib.AGateway;
 import org.smslib.GatewayException;
 import org.smslib.InboundMessage;
+import org.smslib.InboundMessage.MessageClasses;
 import org.smslib.OutboundMessage;
 import org.smslib.Service;
 import org.smslib.StatusReportMessage;
@@ -179,43 +180,48 @@ public class EMAILGateway extends AbstractEmailGateway {
 		}
 		Logger.getInstance().logInfo("Starting gateway.", null, getGatewayId());
 		super.startGateway();
+                Logger.getInstance().logInfo("Gateway started.", null, getGatewayId());
 		
 	}
 
 	@Override
 	public void stopGateway() throws TimeoutException, GatewayException,
 			IOException, InterruptedException {
-		
+		Logger.getInstance().logInfo("Stopping gateway...", null, getGatewayId());
 		super.stopGateway();
+                Logger.getInstance().logInfo("Gateway stopped.", null, getGatewayId());
 	}
 
 
-        @Override
-	public boolean readMessages(Collection<InboundMessage> msgList) throws TimeoutException, GatewayException, IOException, InterruptedException, MessagingException
-	{
-            try {
+        public void readMessages(Collection<InboundMessage> msgList,
+			MessageClasses msgClass) throws TimeoutException, GatewayException,
+			IOException, InterruptedException {
+            try {            
                 List<InboundMessage> retValue = new ArrayList<InboundMessage>();
                 Store s = this.mailSession.getStore();
                 s.connect();
                 Folder inbox = s.getFolder("INBOX"); 
                 inbox.open(Folder.READ_WRITE);
                 for (Message m : inbox.getMessages())
-		{
-			InboundMessage om = new InboundMessage(m.getSubject(), m.getContent().toString());
-			om.setFrom(m.getFrom().toString());
-			om.setDate(m.getReceivedDate());
-			retValue.add(om);
-			// Delete message from inbox
-			m.setFlag(Flags.Flag.DELETED, true);
-		}
-		inbox.close(true);
-		s.close();
-		
+                {
+                    InboundMessage om = new InboundMessage(m.getReceivedDate(), m.getSubject(), m.getContent().toString(),pop_host);
+                    om.setFrom(m.getFrom().toString());
+                    om.setDate(m.getReceivedDate());
+                    retValue.add(om);
+                    // Delete message from inbox
+                    m.setFlag(Flags.Flag.DELETED, true);
+                }
+                inbox.close(true);
+                s.close();
                 
+                
+                
+                //return true;
             } catch (NoSuchProviderException ex) {
                 java.util.logging.Logger.getLogger(EMAILGateway.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (MessagingException ex) {
+                java.util.logging.Logger.getLogger(EMAILGateway.class.getName()).log(Level.SEVERE, null, ex);
             }
-            return true;
         }
  
 
@@ -231,8 +237,8 @@ public class EMAILGateway extends AbstractEmailGateway {
                 mesg.setSubject(updateTemplateString(this.message_subject, msg));
                 if (this.message_body != null)
                 {
-                    //mesg.setText(updateTemplateString(this.message_body, msg));
-                    mesg.setText(msg.toString());
+                    mesg.setText(updateTemplateString(this.message_body, msg));
+                    //mesg.setText(msg.toString());
                 }
                 else
                 {
@@ -270,13 +276,13 @@ public class EMAILGateway extends AbstractEmailGateway {
         
         private void prepareEmailTemplate()
 	{
-		this.message_subject = "message_subject";
-		if (this.message_subject == null ||this. message_subject.length() == 0)
+		//this.message_subject = "message_subject";
+		if (this.message_subject == null ||this.message_subject.length() == 0)
 		{
 			Logger.getInstance().logWarn("No message_subject found - Using default", null, null);
 			this.message_subject = "SMS from %ORIGINATOR%";
 		}
-		File f = new File("message_body");
+		File f = new File(this.message_body);
 		if (f.canRead())
 		{
 			try

@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+  <title></title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR" content="Quanta Plus">
+
+
+<SCRIPT LANGUAGE="JavaScript">
+
+
+
+
+
+
+
+
+
+<!-- Begin
+function createHexArray(n) {
+this.length = n;
+for (var i = 1; i <= n; i++)
+this[i] = i - 1;
+
+this[11] = "A";
+this[12] = "B";
+this[13] = "C";
+this[14] = "D";
+this[15] = "E";
+this[16] = "F";
+return this;
+}
+hx = new createHexArray(16);
+
+function convertToHex(x) {
+if (x < 17) x = 16;
+var high = x / 16;
+var s = high+"";
+s = s.substring(0, 2);
+high = parseInt(s, 10);
+var left = hx[high + 1];
+var low = x - high * 16;
+if (low < 1) low = 1;
+s = low + "";
+s = s.substring(0, 2);
+low = parseInt(s, 10);
+var right = hx[low + 1];
+var string = left + "" + right;
+return string;
+}
+
+function makeRainbow(text) {
+text = text.substring(0, text.length);
+color_d1 = 255;
+mul = color_d1 / text.length;
+for(var i = 0; i < text.length; i++) {
+color_d1 = 255*Math.sin(i / (text.length / 3));
+color_h1 = convertToHex(color_d1);
+color_d2 = mul * i;
+color_h2 = convertToHex(color_d2);
+
+k = text.length;
+j = k - i;
+if (j < 0) j = 0;
+color_d3 = mul * j;
+color_h3 = convertToHex(color_d3);
+document.write("<align = center>");
+document.write("<FONT size=+4 COLOR=\"#" + color_h3 + color_h1 + color_h2 + "\">" + text.substring(i, i + 1) + "</FONT>");document.write("</align>");
+   }
+}
+// End -->
+</script>
+
+
+</head>
+
+<body bgcolor="#fff000" alink="#ffffff" vlink="#20c0cc">
+
+<!-- START Javascript Menu Builder 1.0 config parameters. Don't modify these codes by yourself -->
+<script type='text/javascript' src='awjsmenu10trial.js'></script>
+<script type='text/javascript'>
+AWJSMENU_B("awmenu10",4,"#F3A30C","#F7D05B","#0000FF",1,"#FF0000","#808080",1,"arial",9,0,0,1,1,1,0,0,0,0,0,70,14,"arrow_down.gif","arrow_right.gif",1,500,"","","");
+awmenu101= new Array("Daily Entry","","",4,20,100);
+awmenu101_1= new Array("Payment Voucher","","",0,20,100);
+awmenu101_2= new Array("Money Receipt","","",0,20,100);
+awmenu101_3= new Array("Cargo Schedule","","",0,20,100);
+awmenu101_4= new Array("Adjustment","","",0,20,100);
+awmenu102= new Array("Fixed Entry","","",4,20,100);
+awmenu102_1= new Array("Account Entry","account.php","",0,20,100);
+awmenu102_2= new Array("Ship Entry","","",0,20,100);
+awmenu102_3= new Array("Location Entry","location.php","",0,20,100);
+awmenu102_4= new Array("Material Entry","material.php","",0,20,100);
+awmenu103= new Array("Reort","report.php","",0,20,100);
+awmenu104= new Array("Back to home","","",0,20,100);
+function AWJSMENU(){return}
+</script>
+<noscript>Your browser does not support Javascript!</noscript>
+<!-- END Javascript Menu Builder 1.0 config parameters -->
+
+
+
+
+
+<div align="center"><font size=+3 color ="#00ff00"><b>Online Paperless Solution</b></font></div>
+<div align="center"> <font size=+3 color ="#00DDDD">For</b></font></div>
+<div align="center"><img src=riverine.jpeg width=600 height=100></img></div>
+<div align="center"><b><font size=+3 color ="#A390F3" >By</font></b></div>
+<div align="center"><script>makeRainbow("TechnoDome (PPT)");</script></div>
+<br><br><br><br><br>
+
+<div align="center"><font size="+1"><b>Getting Started</b>
+                                    </font>
+                    </div>
+
+ <p>
+ <a href="#new_entry">Using New Entry Forms </a> <p></p>
+
+ <a href="#payment_voucher">Using Payment Voucher
+    </a>  <p></p>
+ <a href="#money_receipt">Using Money Receipt
+    </a> <p></p>
+ <a href="#cargo_schedule">Using Cargo Schedule
+    </a> <p></p>
+ <a href="#report">Generating Reports
+    </a> <p></p>
+
+ </p>
+</body>
+</html>

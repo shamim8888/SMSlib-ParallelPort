@@ -1,0 +1,72 @@
+<h1>Editing Parallel Configuration</h1>
+
+<% form_for(@parallel_management) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :buillding_name %><br />
+    <%= f.text_field :building_name %>
+  </p>
+  <p>
+    <%= f.label :floor_name %><br />
+    <%= f.text_field :floor_name %>
+  </p>
+  <p>
+    <%= f.label :flat_name %><br />
+    <%= f.text_field :flat_name %>
+  </p>
+  <p>
+    <%= f.label :room_name %><br />
+    <%= f.text_field :room_name %>
+  </p>
+  <p>
+    <%= f.label :host_name %><br />
+    <%= f.text_field :host_name %>
+  </p>
+  <p>
+    <%= f.label :host_address %><br />
+    <%= f.text_field :host_address %>
+  </p>
+  <p>
+    <%= f.label :device_name %><br />
+    <%= f.text_field :device_address %>
+  </p>
+  <p>
+    <%= f.label :equipment_name1 %><br />
+    <%= f.text_field :equipment_name1 %>
+  </p>
+  <p>
+    <%= f.label :equipment_name2 %><br />
+    <%= f.text_field :equipment_name2 %>
+  </p>
+  <p>
+    <%= f.label :equipment_name3 %><br />
+    <%= f.text_field :equipment_name3 %>
+  </p>
+  <p>
+    <%= f.label :equipment_name4 %><br />
+    <%= f.text_field :equipment_name4 %>
+  </p>
+  <p>
+    <%= f.label :equipment_name5 %><br />
+    <%= f.text_field :equipment_name5 %>
+  </p>
+  <p>
+    <%= f.label :equipment_name6 %><br />
+    <%= f.text_field :equipment_name6 %>
+  </p>
+  <p>
+    <%= f.label :equipment_name7 %><br />
+    <%= f.text_field :equipment_name7 %>
+  </p>
+  <p>
+    <%= f.label :equipment_name8 %><br />
+    <%= f.text_field :equipment_name8 %>
+  </p>
+  <p>
+    <%= f.submit 'Update' %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @parallel_management %> |
+<%= link_to 'Back', parallel_management_path %>

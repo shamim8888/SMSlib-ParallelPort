@@ -1,0 +1,23 @@
+<h1>Listing Devices</h1>
+
+<table>
+  <tr>
+    <th>Device ID</th>
+    <th>Device Name</th>
+    <th>Device Address</th>
+  </tr>
+
+<% @devices.each do |device| %>
+  <tr>
+    <td><%=h device.id %></td>
+    <td><%=h device.name %></td>
+    <td><%=h device.address %></td>
+    <td><%= link_to 'Edit', edit_device_path(device) %></td>
+    <td><%= link_to 'Destroy', device, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Device', new_device_path %>

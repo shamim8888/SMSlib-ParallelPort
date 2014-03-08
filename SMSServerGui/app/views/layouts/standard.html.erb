@@ -16,7 +16,7 @@
 	<!-- top -->
 	<div id="top">
 
-          <%= image_tag 'header.jpg', :size => "750x84" %>
+          <%= image_tag 'header.jpg', :size => "1280x84" %>
 	</div>
 <div id=mytopmenu>
 <ul id="sddm">
@@ -51,6 +51,28 @@
                   <%=link_to( "Incoming SMS" , :controller => :Report , :action => :incoming_sms )%>
                   <%=link_to( "Missed Calls" , :controller => :Report , :action => :missed_call )%>
                   <%=link_to( "Clear SMS Queue",:controller => :welcome , :action => :clear_sms_queue  )%>
+		</div>
+	</li>
+        
+        <li><a href="#" onmouseover="mopen('m8')" onmouseout="mclosetime()">New Parallel</a>
+		<div id="m8" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+                  <%=link_to( "New Building" , :controller => :buildings )%>
+                  <%=link_to( "New Floor" , :controller => :floors )%>
+                  <%=link_to( "New Flat" , :controller => :flats )%>
+                  <%=link_to( "New Room",:controller => :rooms )%>
+                  <%=link_to( "New Host" , :controller => :hosts )%>
+                  <%=link_to( "New Device" , :controller => :devices )%>
+                  <%=link_to( "New Equipment" , :controller => :equipments )%>                  
+		</div>
+	</li>
+        <li><a href="#" onmouseover="mopen('m9')" onmouseout="mclosetime()">Parallel Management</a>
+		<div id="m9" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+                  <%=link_to( "Parallel Management",:controller => :parallel_managements )%>
+		</div>
+	</li>
+        <li><a href="#" onmouseover="mopen('m10')" onmouseout="mclosetime()">Parallel Control</a>
+		<div id="m10" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+                  <%=link_to( "Parallel Control",:controller => :parallel_controls )%>
 		</div>
 	</li>
 	<li><a href="/login/logout" onmouseover="mopen('m6')" onmouseout="mclosetime()">Logout</a></li>

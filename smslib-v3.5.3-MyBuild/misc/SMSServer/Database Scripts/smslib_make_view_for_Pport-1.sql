@@ -1,0 +1,4 @@
+CREATE VIEW parallel_port_view1 AS
+             SELECT spcdc.id as record_number, bld.name as building_name, flr.name as floor_name, flt.name as flat_name, rom.name as room_name,dvc.name as lpt_comm_device_name, eqpmt.name as equipment_name
+	  
+             FROM smsserver_parallel_comm_device_configuration spcdc, building bld, floor flr, flat flt,room rom, device dvc, equipment eqpmt WHERE spcdc.building_id = bld.id and spcdc.floor_id = flr.id and spcdc.flat_id = flt.id and spcdc.room_id = rom.id and spcdc.device_id = dvc.id and spcdc.equipment1_id = eqpmt.id and spcdc.equipment2_id = eqpmt.id and spcdc.equipment3_id = eqpmt.id and spcdc.equipment4_id = eqpmt.id and spcdc.equipment5_id = eqpmt.id and spcdc.equipment6_id = eqpmt.id and spcdc.equipment7_id = eqpmt.id and spcdc.equipment8_id = eqpmt.id
