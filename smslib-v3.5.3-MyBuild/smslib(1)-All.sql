@@ -79,13 +79,13 @@ CREATE TABLE IF NOT EXISTS `equipment` (
 -- Dumping data for table `equipment`
 --
 
-INSERT INTO `equipment` (`id`, `name`) VALUES
-(6, 'Ac'),
-(1, 'Computer'),
-(4, 'Fan'),
-(5, 'Refrigerator'),
-(3, 'TubeLight'),
-(2, 'TV');
+INSERT INTO `equipment` (`id`, `name`, `consumption`) VALUES
+(6, 'Ac', '2500'),
+(1, 'Computer', '250'),
+(4, 'Fan', '60'),
+(5, 'Refrigerator', '150'),
+(3, 'TubeLight', '36'),
+(2, 'TV', '30');
 
 -- --------------------------------------------------------
 
