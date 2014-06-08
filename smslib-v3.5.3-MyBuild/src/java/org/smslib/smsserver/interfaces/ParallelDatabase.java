@@ -1492,4 +1492,31 @@ public class ParallelDatabase extends Interface<Integer>
                     System.out.println("Check To See if we write properly: "+stat);                                                                                                                                                                                     
                 }                         
         // end of my copy from iotest.java shamim
-}
+        
+        
+        //Scratch Writing of PutSratusInSMS Function --- Data 08-06-2014 --- author shamim Ahmed Chowdhury
+	
+	public  void PutSratusInSMS(String SMSOut, Sreing[][] AreaName, String HostAreaName, String[] SpaceToken, String Status)
+		{
+	       		if (SMSOut.Contains(SpaceToken)
+	       			{
+
+					SpaceToken.Remove[1];
+					PutStatusInSMS(SMSOut, AreaName, HostAreaName, SpaceToken, Status);
+	       			}
+	       		else
+	       			{
+	       				for(int i = 0; i < BuildingArray.Length; i++)
+	       					{
+	       						if (SMSOut.Contains(Bhaban3))
+	       							{
+	       								
+	       							
+	       							}
+	       					}
+	       			}
+	       			
+	       			
+		}
+
+
