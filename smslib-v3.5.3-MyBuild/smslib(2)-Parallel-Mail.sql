@@ -74,17 +74,32 @@ CREATE TABLE IF NOT EXISTS `equipment` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
 
+
+
+CREATE TABLE IF NOT EXISTS `equipments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL,
+  `consumption` int(11,2),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+
+
+
+
+
+
 --
 -- Dumping data for table `equipment`
 --
 
-INSERT INTO `equipment` (`id`, `name`) VALUES
-(6, 'Ac'),
-(1, 'Computer'),
-(4, 'Fan'),
-(5, 'Refrigerator'),
-(3, 'TubeLight'),
-(2, 'TV');
+INSERT INTO `equipment` (`id`, `name`, `consumption`) VALUES
+(6, 'Ac', '2500'),
+(1, 'Computer', '500'),
+(4, 'Fan', '70'),
+(5, 'Refrigerator', '150'),
+(3, 'TubeLight', '36'),
+(2, 'TV', '30');
 
 -- --------------------------------------------------------
 
