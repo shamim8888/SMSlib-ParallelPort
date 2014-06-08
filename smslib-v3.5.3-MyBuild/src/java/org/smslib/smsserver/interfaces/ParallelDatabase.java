@@ -1495,24 +1495,34 @@ public class ParallelDatabase extends Interface<Integer>
         
         
         //Scratch Writing of PutSratusInSMS Function --- Data 08-06-2014 --- author shamim Ahmed Chowdhury
-	
+	// Status All SMS for a Country/DivisionDistrict/UpaZillaUnion/Area Or Ward/Building/Floor/Flat/Room/Computer Or Host(Doskless)
 	public  void PutSratusInSMS(String SMSOut, Sreing[][] AreaName, String HostAreaName, String[] SpaceToken, String Status)
 		{
 	       		if (SMSOut.Contains(SpaceToken)
 	       			{
 
-					SpaceToken.Remove[1];
+					SpaceToken.Remove[0]; //First
 					PutStatusInSMS(SMSOut, AreaName, HostAreaName, SpaceToken, Status);
 	       			}
 	       		else
 	       			{
 	       				for(int i = 0; i < BuildingArray.Length; i++)
 	       					{
-	       						if (SMSOut.Contains(Bhaban3))
+	       						if (SMSOut.Contains(Spacetoken)
 	       							{
-	       								
-	       							
+	       								SpaceToken.Remove[0];  //Forst
+										       							
 	       							}
+	       						else
+	       							{
+	       								for(int j=2; i < Buildong - 10; i++)
+	       									{
+	       										if (SMSOut.Contains(BuildingArray[j])
+	       											{
+	       												Boolean BeforePosition = True;
+	       											}
+	       									}
+	       								for(for v()
 	       					}
 	       			}
 	       			
