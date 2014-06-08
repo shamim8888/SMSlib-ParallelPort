@@ -472,3 +472,30 @@ ALTER TABLE `smsserver_parallel_device_configuration`
   ADD CONSTRAINT `smsserver_parallel_device_configuration_ibfk_1` FOREIGN KEY (`building_id`) REFERENCES `building` (`id`),
   ADD CONSTRAINT `smsserver_parallel_device_configuration_ibfk_2` FOREIGN KEY (`room_id`) REFERENCES `room` (`id`),
   ADD CONSTRAINT `smsserver_parallel_device_configuration_ibfk_3` FOREIGN KEY (`lpt_comm_device_id`) REFERENCES `device` (`id`);
+
+
+CREATE TABLE IF NOT EXISTS `smsserver_parallel_controls` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `building_id` int(11) NOT NULL,
+  `floor_id` int(11) NOT NULL,
+  `flat_id` int(11) NOT NULL,
+  `room_id` int(11) NOT NULL,
+  `host_id` int(11) NOT NULL,
+  `lpt_comm_device_id` int(11) NOT NULL,
+  `equipment1_id` int(11) NOT NULL,
+  `equipment2_id` int(11) NOT NULL,
+  `equipment3_id` int(11) NOT NULL,
+  `equipment4_id` int(11) NOT NULL,
+  `equipment5_id` int(11) NOT NULL,
+  `equipment6_id` int(11) NOT NULL,
+  `equipment7_id` int(11) NOT NULL,
+  `equipment8_id` int(11) NOT NULL,
+  `command_name` varchar(6),
+  `started_since` datetime,
+  `start_time` datetime,
+  `stop_time` datetime,
+  PRIMARY KEY (`id`),
+  KEY `lpt_comm_device_id` (`lpt_comm_device_id`),
+  KEY `building_id` (`building_id`),
+  KEY `room_id` (`room_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
