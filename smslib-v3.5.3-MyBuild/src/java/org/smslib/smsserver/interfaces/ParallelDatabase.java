@@ -1495,7 +1495,8 @@ public class ParallelDatabase extends Interface<Integer>
         
         
         //Scratch Writing of PutSratusInSMS Function --- Data 08-06-2014 --- author shamim Ahmed Chowdhury
-	// Status All SMS for a Country/DivisionDistrict/UpaZillaUnion/Area Or Ward/Building/Floor/Flat/Room/Computer Or Host(Doskless)
+	// Status All SMS for a World/Country/DivisionDistrict/UpaZillaUnion/Area Or Ward/Building/Floor/Flat/Room/Computer Or Host(Doskless)
+	
 	public  void PutSratusInSMS(String SMSOut, Sreing[][] AreaName, String HostAreaName, String[] SpaceToken, String Status)
 		{
 	       		if (SMSOut.Contains(SpaceToken)
@@ -1515,14 +1516,21 @@ public class ParallelDatabase extends Interface<Integer>
 	       							}
 	       						else
 	       							{
-	       								for(int j=2; i < Buildong - 10; i++)
+	       								for(int j=2; j < Buildong - 10; j++)
 	       									{
 	       										if (SMSOut.Contains(BuildingArray[j])
 	       											{
 	       												Boolean BeforePosition = True;
 	       											}
 	       									}
-	       								for(for v()
+		       							for(int k = BuildingArray.Length ; k > Building_ID ; k++)
+		       								{
+		       									if ( SMSOut.ConTains(BuildongArray[j][1])
+		       										{
+		       											Boolean AfterPosition = True;
+		       											int AfterPos = SMSOut.StrPos(BuildingArray[k][1]) 
+		       										}
+		       								}
 	       					}
 	       			}
 	       			
